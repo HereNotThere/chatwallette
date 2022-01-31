@@ -175,15 +175,15 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       numberOfKeys: 2,
       lua: `
         local waitingListKey = KEYS[1]
-        local waitingListIsUniqueKey = KEYS[2]
+        local waitingListIsWaitingKey = KEYS[2]
         local walletAddress = ARGV[1]
 
         local isEnqueued = "false"
 
         -- Avoid adding duplicates.
-        local isMember = redis.call("sismember", waitingListIsUniqueKey, walletAddress)
+        local isMember = redis.call("sismember", waitingListIsWaitingKey, walletAddress)
         if isMember == 0 then
-          redis.call("sadd", waitingListIsUniqueKey, walletAddress)
+          redis.call("sadd", waitingListIsWaitingKey, walletAddress)
           -- Add to the end of the queue
           redis.call("rpush", waitingListKey, walletAddress)
           isEnqueued = "true"
@@ -192,14 +192,14 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         return {
           isEnqueued
         }
-        `,
+      `,
     });
 
     this.redisClient.defineCommand("findMatchingPair", {
       numberOfKeys: 3,
       lua: `
         local waitingListKey = KEYS[1]
-        local waitingListIsUniqueKey = KEYS[2]
+        local waitingListIsWaitingKey = KEYS[2]
         local waitingListMatchRandomKey = KEYS[3]
         local walletAddress = ARGV[1]
 
@@ -209,7 +209,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
             -- delete any duplicates 
             redis.call("lrem", waitingListKey, 0, candidate)
             -- clear uniqueness flag
-            redis.call("srem", waitingListIsUniqueKey, candidate)
+            redis.call("srem", waitingListIsWaitingKey, candidate)
           end
         end
 
@@ -305,7 +305,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         end
 
         -- main
-        local isWaiting = redis.call("sismember", waitingListIsUniqueKey, walletAddress)
+        local isWaiting = redis.call("sismember", waitingListIsWaitingKey, walletAddress)
 
         if isWaiting == 1 then
           local isRandom = redis.call("sismember", waitingListMatchRandomKey, walletAddress)
@@ -463,7 +463,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         if (lua?.enqueueToWaitingList) {
           lua.enqueueToWaitingList(
             StoreKeys.waitingListKey,
-            StoreKeys.waitingListIsUniqueKey,
+            StoreKeys.waitingListIsWaitingKey,
             walletAddress,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (err: any, result: any) => {
@@ -493,7 +493,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       await this.redisClient
         ?.multi()
         .lrem(StoreKeys.waitingListKey, 0, walletAddress)
-        .srem(StoreKeys.waitingListIsUniqueKey, walletAddress)
+        .srem(StoreKeys.waitingListIsWaitingKey, walletAddress)
         .srem(StoreKeys.waitingListMatchRandomKey, walletAddress)
         .exec();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -509,7 +509,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       if (lua?.findMatchingPair) {
         lua.findMatchingPair(
           StoreKeys.waitingListKey,
-          StoreKeys.waitingListIsUniqueKey,
+          StoreKeys.waitingListIsWaitingKey,
           StoreKeys.waitingListMatchRandomKey,
           walletAddress,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -544,7 +544,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
 
 class StoreKeys {
   static waitingListKey = "waitingList" as const;
-  static waitingListIsUniqueKey = "waitingList:isUnique" as const;
+  static waitingListIsWaitingKey = "waitingList:isWaiting" as const;
   static waitingListMatchRandomKey = "waitingList:matchRandom" as const;
 
   static getWalletKey(walletAddress: string): string {
