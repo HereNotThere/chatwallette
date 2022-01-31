@@ -18,6 +18,7 @@ import { https } from "follow-redirects";
 import { URL } from "url";
 
 import Fastify, { FastifyLoggerInstance, FastifyReply } from "fastify";
+import IORedis from "ioredis";
 
 import keccak256 from "keccak256";
 import findup from "findup-sync";
@@ -26,6 +27,7 @@ import dotenv from "dotenv";
 import { staticServe } from "fastify-auto-push-v3";
 import fastifyCookie from "fastify-cookie";
 import fastifyCors from "fastify-cors";
+import fastifyRateLimit from "fastify-rate-limit";
 import { Static, Type } from "@sinclair/typebox";
 import { SSEPlugin } from "./sse/sse-plugin";
 import { WebRTCSignalingServer } from "./web_rtc_signaling_server";
@@ -485,6 +487,22 @@ const start = async () => {
     } else {
       return reply.status(401).send();
     }
+  });
+
+  const redisHost = process.env.REDISHOST ?? "localhost";
+  const redisPort = parseInt(process.env.REDISPORT ?? "6379", 10);
+
+  const redisConfig: IORedis.RedisOptions = {
+    connectionName: "fastify-rate-limit",
+    port: redisPort,
+    host: redisHost,
+  };
+
+  const rateLimitRedis = new IORedis(redisConfig);
+  await fastify.register(fastifyRateLimit, {
+    redis: rateLimitRedis,
+    max: 600,
+    timeWindow: "1 minute",
   });
 
   const authCookieSecret = await getAuthCookieSecret();
