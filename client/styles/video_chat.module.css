@@ -1,0 +1,29 @@
+.container {
+  padding: 0 2rem;
+}
+
+.button {
+  margin: 0.2em 0.1em;
+  background: blue;
+}
+
+.button:disabled,
+.button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+
+.videos {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.video {
+  background: black;
+  width: 640px;
+  height: 100%;
+  display: block;
+  margin: 1em;
+}

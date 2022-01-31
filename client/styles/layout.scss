@@ -1,0 +1,140 @@
+/* TODO : move to global styled-component */
+$baseline: 8px;
+
+$colors: (
+  "black-purple": #180b20,
+  "xdark-purple": #200e2c,
+  "xdark-purple2": #2c133b,
+  "dark-purple": #412055,
+  "grape-purple": #491f62,
+  "light-purple": #cb9ee5,
+  "pink": #ff00c2,
+  "neon-purple": #cf47ff,
+  "turqoise": #00edff,
+  "yellow": #fee501,
+  "white": #fff,
+);
+
+:root {
+  @each $name, $color in $colors {
+    --color-#{$name}: #{$color};
+  }
+
+  --bg: var(--color-black-purple);
+  --bg-body: var(--color-black-purple);
+  --bg-panel: var(--color-xdark-purple);
+  --bg-panel2: var(--color-xdark-purple2);
+  --bg-input: var(--color-dark-purple);
+  --bg-button: var(--color-neon-purple);
+
+  --bg-border: var(--color-dark-purple);
+  --bg-shadow: var(--color-black-purple);
+
+  --fg: var(--color-white);
+  --fg-body: var(--color-white);
+  --fg-muted: var(--color-light-purple);
+  --fg-primary: var(--color-turqoise);
+  --fg-inverted: var(--bg);
+
+  --border-size: #{$baseline * 0.25};
+  --shadow-size: #{$baseline * 0.5};
+
+  --bl: #{$baseline};
+
+  @for $bl from 0 to 10 {
+    --bl#{$bl}: calc(#{$bl} * var(--bl));
+  }
+
+  --spacing-no: 0;
+  --spacing-xs: var(--bl1);
+  --spacing-sm: var(--bl2);
+  --spacing-md: var(--bl4);
+  --spacing-lg: var(--bl6);
+  --spacing-xl: var(--bl8);
+}
+
+* {
+  // background: var(--bg);
+  color: var(--fg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Pixel Arial 11";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: -0.024em;
+}
+
+body {
+  font-family: "Pixel Arial 11";
+}
+
+button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: normal;
+}
+
+h1,
+h2 {
+  font-family: "Pixel Arial 11";
+  font-style: normal;
+  font-weight: bold;
+}
+h1 {
+  font-weight: bold;
+  font-size: 24px;
+}
+h2 {
+  font-weight: bold;
+  font-size: 18px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+p,
+.body-text {
+  font-size: 13px;
+  line-height: 2;
+  margin: 0;
+}
+
+input {
+  font-family: "Pixel Arial 11";
+  font-size: 13px;
+}
+
+::placeholder {
+  color: var(--fg);
+  opacity: 0.5;
+}
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+span img {
+  display: inline-block;
+  overflow: hidden;
+  height: 1.5em;
+  width: 1.5em;
+}
+
+.logout {
+  width: 24px;
+  height: 24px;
+}
