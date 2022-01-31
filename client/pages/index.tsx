@@ -7,7 +7,7 @@ import { InfoIcon, TwitterIcon, EmailIcon, QuestionIcon, GithubIcon } from "../c
 import { Stack } from "../components/Stack";
 import Link from "next/link";
 
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import IntroModule from "../components/IntroModule/IntroModule";
 import { Box } from "../components/Box";
 import { useWeb3Context, WalletStatus } from "../hooks/use_web3";
@@ -81,6 +81,7 @@ const Home: NextPage = () => {
   ]);
 
   const { walletStatus, accounts, chainId } = useWeb3Context();
+  const chainName = useMemo(() => (chainId === "0x1" ? "Ethereum Mainnet" : chainId), [chainId]);
 
   const onWalletAvailable = useCallback(async () => {
     logger.info(`onWalletAvailable`);
@@ -195,7 +196,7 @@ const Home: NextPage = () => {
           <Stack row>
             {chainId ? (
               <Box className="body-text" border padding="xs" background="panel">
-                ChainId: {chainId}
+                ChainId: {chainName}
               </Box>
             ) : null}
             {isAuthenticated && accounts && accounts[0] && (

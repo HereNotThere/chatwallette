@@ -1,7 +1,7 @@
 import stringify from "fast-json-stable-stringify";
 import keccak256 from "keccak256";
 import { NextPage } from "next";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import styled from "styled-components";
 import {
@@ -107,6 +107,8 @@ const ChatPage: NextPage = () => {
   const [disconnectedSound] = useState(isBrowser ? new Audio(DisconnectedSound) : undefined);
 
   const { chainId } = useWeb3Context();
+  const chainName = useMemo(() => (chainId === "0x1" ? "Ethereum Mainnet" : chainId), [chainId]);
+
   const { setIsAuthenticated, walletAddress, keypair, setSelfERC20, selfNFT, setSelfNFT, setWalletENS } = useStore();
 
   const sendIceSignallingRequest = useCallback(
@@ -663,7 +665,7 @@ const ChatPage: NextPage = () => {
               <Stack shrink>
                 <Stack shrink row>
                   <Box className="body-text" border padding="xs" background="panel">
-                    ChainID: {chainId}
+                    ChainID: {chainName}
                   </Box>
                   <Stack row itemSpace="no">
                     <Button className="body-text" border padding="xs" background="panel" onClick={onClickShowNft}>
