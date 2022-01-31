@@ -1,4 +1,3 @@
-const optimizedImages = require("next-optimized-images");
 const withPlugins = require("next-compose-plugins");
 const zlib = require("zlib");
 const CompressionPlugin = require("compression-webpack-plugin");
@@ -51,19 +50,6 @@ const nextConfig = {
   },
 };
 
-const config = withPlugins(
-  [
-    [withBundleAnalyzer],
-
-    [
-      optimizedImages,
-      {
-        // optimisation disabled by default, to enable check https://github.com/cyrilwanner/next-optimized-images
-        optimizeImages: false,
-      },
-    ],
-  ],
-  nextConfig,
-);
+const config = withPlugins([[withBundleAnalyzer]], nextConfig);
 
 module.exports = config;
