@@ -36,6 +36,7 @@ export interface WalletConnectionStore {
   removeAuthenticatedUser(log: FastifyLoggerInstance, walletAddress: string): Promise<void>;
   sendToWallet(log: FastifyLoggerInstance, walletAddress: string, message: EventMessage): Promise<void>;
   removeFromWaitingList(log: FastifyLoggerInstance, walletAddress: string): Promise<void>;
+  updateExcludedTokens(excludedTokens: string[]): Promise<void>;
   updateMatchCriteria(log: FastifyLoggerInstance, walletAddress: string, matchCriteria: MatchCriteria): Promise<void>;
   updateWalletData(log: FastifyLoggerInstance, walletAddress: string, wallet: WalletData): Promise<void>;
 }
@@ -154,6 +155,11 @@ class WalletConnectionStoreInMemory extends EventEmitter implements WalletConnec
       this.waitingList.splice(index, 1);
     }
     this.isInQueue.delete(walletAddress);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async updateExcludedTokens(excludedTokens: string[]): Promise<void> {
+    // Not implemented
   }
 }
 
@@ -540,9 +546,29 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
   public async getWaitingListLength(): Promise<number> {
     return (await this.redisClient.llen(StoreKeys.waitingListKey)) ?? 0;
   }
+
+  public async updateExcludedTokens(excludedTokens: string[]): Promise<void> {
+    const excludedTokensKey = StoreKeys.tokensExcludedKey;
+    const multi = this.redisClient.multi();
+    if (multi) {
+      multi.del(excludedTokensKey);
+
+      for (const t of excludedTokens) {
+        multi.sadd(excludedTokensKey, t);
+      }
+
+      try {
+        await multi.exec();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        console.error(`Unable to update excluded tokens list. Error: ${e.stack}`);
+      }
+    }
+  }
 }
 
 class StoreKeys {
+  static tokensExcludedKey = "tokens:excluded" as const;
   static waitingListKey = "waitingList" as const;
   static waitingListIsWaitingKey = "waitingList:isWaiting" as const;
   static waitingListMatchRandomKey = "waitingList:matchRandom" as const;

@@ -238,6 +238,7 @@ const start = async () => {
 
   const walletConnectionStore = await getConnectionStore();
   const signalingServer = new WebRTCSignalingServer(walletConnectionStore);
+  await signalingServer.applyConfigurations();
 
   const [moralisApiKey, subspaceApiKey, gcpMetadata] = await Promise.all([
     getMoralisApiKey(),
