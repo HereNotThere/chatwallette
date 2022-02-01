@@ -83,7 +83,14 @@ export const ChatPanel = (props: Props) => {
   const otherTokensLength = matchedNFT.length - randomTokens.length;
 
   const openseaUrl = useMemo(() => {
-    return chainId === "0x4" ? "https://testnets.opensea.io/" : "https://opensea.io/";
+    switch (chainId) {
+      case "0x1":
+        return "https://opensea.io/";
+      case "0x4":
+        return "https://testnets.opensea.io/";
+      default:
+        return undefined;
+    }
   }, [chainId]);
 
   useEffect(() => {
@@ -123,15 +130,19 @@ export const ChatPanel = (props: Props) => {
               {otherTokensLength > 0 ? ` and ${otherTokensLength} other things` : ""}
             </Paragraph>
           )}
-          <Paragraph>
-            <a target="_blank" href={openseaUrl + otherWallet} rel="noopener noreferrer">
-              <SpanText bold textColor="Turqoise">
-                Click here
-              </SpanText>
-            </a>
+          {openseaUrl ? (
+            <Paragraph>
+              <a target="_blank" href={openseaUrl + otherWallet} rel="noopener noreferrer">
+                <SpanText bold textColor="Turqoise">
+                  Click here
+                </SpanText>
+              </a>
 
-            <SpanText>{" to see all their holdings"}</SpanText>
-          </Paragraph>
+              <SpanText>{" to see all their holdings"}</SpanText>
+            </Paragraph>
+          ) : (
+            <></>
+          )}
 
           {matchedNFT.length > 0 && (
             <>
