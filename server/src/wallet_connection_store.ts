@@ -36,6 +36,7 @@ export interface WalletConnectionStore {
   removeAuthenticatedUser(log: FastifyLoggerInstance, walletAddress: string): Promise<void>;
   sendToWallet(log: FastifyLoggerInstance, walletAddress: string, message: EventMessage): Promise<void>;
   removeFromWaitingList(log: FastifyLoggerInstance, walletAddress: string): Promise<void>;
+  updateExcludedTokens(excludedTokens: string[]): Promise<void>;
   updateMatchCriteria(log: FastifyLoggerInstance, walletAddress: string, matchCriteria: MatchCriteria): Promise<void>;
   updateWalletData(log: FastifyLoggerInstance, walletAddress: string, wallet: WalletData): Promise<void>;
 }
@@ -155,6 +156,11 @@ class WalletConnectionStoreInMemory extends EventEmitter implements WalletConnec
     }
     this.isInQueue.delete(walletAddress);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async updateExcludedTokens(excludedTokens: string[]): Promise<void> {
+    // Not implemented
+  }
 }
 
 export class WalletConnectionStoreRedis extends EventEmitter implements WalletConnectionStore {
@@ -175,15 +181,15 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       numberOfKeys: 2,
       lua: `
         local waitingListKey = KEYS[1]
-        local waitingListIsUniqueKey = KEYS[2]
+        local waitingListIsWaitingKey = KEYS[2]
         local walletAddress = ARGV[1]
 
         local isEnqueued = "false"
 
         -- Avoid adding duplicates.
-        local isMember = redis.call("sismember", waitingListIsUniqueKey, walletAddress)
+        local isMember = redis.call("sismember", waitingListIsWaitingKey, walletAddress)
         if isMember == 0 then
-          redis.call("sadd", waitingListIsUniqueKey, walletAddress)
+          redis.call("sadd", waitingListIsWaitingKey, walletAddress)
           -- Add to the end of the queue
           redis.call("rpush", waitingListKey, walletAddress)
           isEnqueued = "true"
@@ -192,14 +198,14 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         return {
           isEnqueued
         }
-        `,
+      `,
     });
 
     this.redisClient.defineCommand("findMatchingPair", {
       numberOfKeys: 3,
       lua: `
         local waitingListKey = KEYS[1]
-        local waitingListIsUniqueKey = KEYS[2]
+        local waitingListIsWaitingKey = KEYS[2]
         local waitingListMatchRandomKey = KEYS[3]
         local walletAddress = ARGV[1]
 
@@ -209,7 +215,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
             -- delete any duplicates 
             redis.call("lrem", waitingListKey, 0, candidate)
             -- clear uniqueness flag
-            redis.call("srem", waitingListIsUniqueKey, candidate)
+            redis.call("srem", waitingListIsWaitingKey, candidate)
           end
         end
 
@@ -305,7 +311,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         end
 
         -- main
-        local isWaiting = redis.call("sismember", waitingListIsUniqueKey, walletAddress)
+        local isWaiting = redis.call("sismember", waitingListIsWaitingKey, walletAddress)
 
         if isWaiting == 1 then
           local isRandom = redis.call("sismember", waitingListMatchRandomKey, walletAddress)
@@ -375,6 +381,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
   ): Promise<void> {
     // Store the serialized version of the wallet.
     const walletKey = StoreKeys.getWalletKey(walletAddress);
+    const tokensBeforeUpdateKey = StoreKeys.getTokensBeforeUpdateKey(walletAddress);
     const tokensKey = StoreKeys.getTokensKey(walletAddress);
 
     // Start a transaction.
@@ -383,13 +390,16 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
     if (multi) {
       multi.set(walletKey, JSON.stringify(walletData));
 
-      // Delete any old tokens data
-      multi.del(tokensKey);
-
-      // Set the updated tokens.
+      // Add the tokens into a temp set.
       walletData.allNFT?.forEach((nft: NFTResult) => {
-        multi.sadd(tokensKey, nft.token_address);
+        multi.sadd(tokensBeforeUpdateKey, nft.token_address);
       });
+
+      // Subtract the excluded tokens.
+      multi.sdiffstore(tokensKey, tokensBeforeUpdateKey, StoreKeys.tokensExcludedKey);
+
+      // Delete the temp set
+      multi.del(tokensBeforeUpdateKey);
 
       // Execute the transaction.
       try {
@@ -397,7 +407,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         this.emit("onchanged", log, walletAddress);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        log.error(`Failed to update tokens. Error: ${e.stack}`);
+        log.error(`Unable to update tokens. Error: ${e.stack}`);
       }
     }
   }
@@ -463,7 +473,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         if (lua?.enqueueToWaitingList) {
           lua.enqueueToWaitingList(
             StoreKeys.waitingListKey,
-            StoreKeys.waitingListIsUniqueKey,
+            StoreKeys.waitingListIsWaitingKey,
             walletAddress,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (err: any, result: any) => {
@@ -493,7 +503,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       await this.redisClient
         ?.multi()
         .lrem(StoreKeys.waitingListKey, 0, walletAddress)
-        .srem(StoreKeys.waitingListIsUniqueKey, walletAddress)
+        .srem(StoreKeys.waitingListIsWaitingKey, walletAddress)
         .srem(StoreKeys.waitingListMatchRandomKey, walletAddress)
         .exec();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -509,7 +519,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       if (lua?.findMatchingPair) {
         lua.findMatchingPair(
           StoreKeys.waitingListKey,
-          StoreKeys.waitingListIsUniqueKey,
+          StoreKeys.waitingListIsWaitingKey,
           StoreKeys.waitingListMatchRandomKey,
           walletAddress,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -540,11 +550,31 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
   public async getWaitingListLength(): Promise<number> {
     return (await this.redisClient.llen(StoreKeys.waitingListKey)) ?? 0;
   }
+
+  public async updateExcludedTokens(excludedTokens: string[]): Promise<void> {
+    const excludedTokensKey = StoreKeys.tokensExcludedKey;
+    const multi = this.redisClient.multi();
+    if (multi) {
+      multi.del(excludedTokensKey);
+
+      for (const t of excludedTokens) {
+        multi.sadd(excludedTokensKey, t);
+      }
+
+      try {
+        await multi.exec();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        console.error(`Unable to update excluded tokens list. Error: ${e.stack}`);
+      }
+    }
+  }
 }
 
 class StoreKeys {
+  static tokensExcludedKey = "tokens:excluded" as const;
   static waitingListKey = "waitingList" as const;
-  static waitingListIsUniqueKey = "waitingList:isUnique" as const;
+  static waitingListIsWaitingKey = "waitingList:isWaiting" as const;
   static waitingListMatchRandomKey = "waitingList:matchRandom" as const;
 
   static getWalletKey(walletAddress: string): string {
@@ -557,6 +587,10 @@ class StoreKeys {
 
   static getTokensKey(walletAddress: string): string {
     return `tokens:${walletAddress}`;
+  }
+
+  static getTokensBeforeUpdateKey(walletAddress: string): string {
+    return `tokens:${walletAddress}:beforeUpdate`;
   }
 
   static getUserAuthKey(walletAddress: string): string {

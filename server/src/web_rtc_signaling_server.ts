@@ -30,6 +30,13 @@ export class WebRTCSignalingServer {
     });
   }
 
+  public async applyConfigurations(): Promise<void> {
+    // Exclude these tokens for matching.
+    await this.connectionStore.updateExcludedTokens([
+      "0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85", // ENS token
+    ]);
+  }
+
   public async handleRequest(
     log: FastifyLoggerInstance,
     walletAddress: string,
