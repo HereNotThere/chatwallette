@@ -5,11 +5,11 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Box } from "../components/Box";
 import { Button } from "../components/Button";
-import { EmailIcon, GithubIcon, InfoIcon, QuestionIcon, TwitterIcon } from "../components/Icons";
+import { EmailIcon, GithubIcon, QuestionIcon, TwitterIcon } from "../components/Icons";
 import { IntroModule } from "../components/IntroModule/IntroModule";
 import { NFTBackground } from "../components/NFTBackground/NFTBackground";
 import { Stack } from "../components/Stack";
-import { Paragraph, SmallParagraph, SpanText } from "../components/Text/Text";
+import { SmallParagraph, SpanText } from "../components/Text/Text";
 import { abbrevWalletAddress } from "../components/User/DisplayName";
 import { useWeb3Context, WalletStatus } from "../hooks/use_web3";
 import { useWhyDidYouUpdate } from "../hooks/use_why_did_you_update";
@@ -252,10 +252,10 @@ const Home: NextPage = () => {
             </a>
           </Link>
         </Stack>
-        <SmallParagraph>
+        <SmallParagraph textColor="White">
           A fun experiment by{" "}
           <a href="https://hntlabs.com" target="_blank" rel="noreferrer">
-            <SpanText textColor="LightPurple">Here Not There Labs</SpanText>
+            <SpanText textColor="NeonPurple">Here Not There Labs</SpanText>
           </a>
         </SmallParagraph>
       </Stack>
