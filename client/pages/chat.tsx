@@ -79,7 +79,12 @@ function deriveSecretKey(privateKey: CryptoKey, publicKey: CryptoKey) {
   );
 }
 
+// Audio is not defined on the server.
+// Put sound definitions behind isBrowser, which will only
+// be rendered on client side.
 const isBrowser = typeof window !== "undefined";
+const connectedSound = isBrowser ? new Audio(ConnectedSound) : undefined;
+const disconnectedSound = isBrowser ? new Audio(DisconnectedSound) : undefined;
 
 const ChatPage: NextPage = () => {
   const [participants, setParticipants] = useState<string[]>();
@@ -100,12 +105,6 @@ const ChatPage: NextPage = () => {
   const [secretKey, setSecretKey] = useState<CryptoKey>();
 
   const [terminalLog, setTerminalLog] = useState<TerminalLog>([]);
-
-  // Audio is not defined on the server.
-  // Put sound definitions behind isBrowser, which will only
-  // be rendered on client side.
-  const [connectedSound] = useState(isBrowser ? new Audio(ConnectedSound) : undefined);
-  const [disconnectedSound] = useState(isBrowser ? new Audio(DisconnectedSound) : undefined);
 
   const { chainId } = useWeb3Context();
   const chainName = useMemo(() => (chainId === "0x1" ? "Ethereum Mainnet" : chainId), [chainId]);
@@ -241,27 +240,23 @@ const ChatPage: NextPage = () => {
     secretKey,
   });
 
-  const prevConnectionStatus = usePrevious<ConnectionStatus>(chatSession.connectionStatus);
-
   useEffect(() => {
-    if (chatSession.connectionStatus !== prevConnectionStatus) {
-      switch (chatSession.connectionStatus) {
-        case ConnectionStatus.Connected:
-          void (async () => {
-            await connectedSound?.play();
-          })();
-          break;
-        case ConnectionStatus.Disconnected:
-          void (async () => {
-            await disconnectedSound?.play();
-          })();
-          break;
-        default:
-          // No sound
-          break;
-      }
+    switch (chatSession.connectionStatus) {
+      case ConnectionStatus.Connected:
+        void (async () => {
+          await connectedSound?.play();
+        })();
+        break;
+      case ConnectionStatus.Disconnected:
+        void (async () => {
+          await disconnectedSound?.play();
+        })();
+        break;
+      default:
+        // No sound
+        break;
     }
-  }, [chatSession.connectionStatus, connectedSound, disconnectedSound, prevConnectionStatus]);
+  }, [chatSession.connectionStatus]);
 
   const { devices } = useMediaDevices();
   useEffect(() => logger.info(`devicesLength: ${devices.length}`), [devices]);

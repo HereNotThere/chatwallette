@@ -35,6 +35,9 @@ export const SpanText = styled(BaseText).attrs(() => ({ as: "span" }))``;
 export const HeaderLarge = styled(BaseText).attrs(() => ({ as: "h1" }))``;
 export const Header = styled(BaseText).attrs(() => ({ as: "h2" }))``;
 export const Paragraph = styled(BaseText).attrs(() => ({ as: "p" }))``;
+export const SmallParagraph = styled(BaseText).attrs(() => ({ as: "p" }))`
+  font-size: 9px;
+`;
 
 export const Text = {
   span: SpanText,

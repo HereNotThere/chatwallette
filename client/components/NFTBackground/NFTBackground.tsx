@@ -1,12 +1,13 @@
 import React, { RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { Box } from "../Box";
+import { IntroModule } from "../IntroModule/IntroModule";
 
 const CELL_SIZE = 70;
 const UPDATE_INTERVAL_MS = 750;
 const Logos = ["/a1.png", "/a2.png", "/a3.png", "/a4.png", "/a5.png", "/a6.png", "/a7.png", "/a8.png", "/a9.png"];
 
-export const LogoBackground = React.memo(() => {
+export const NFTBackground = React.memo(() => {
   const [logos, setLogos] = useState<number[]>([]);
   const randomizedLogos = useMemo(() => new Array(logos.length).fill(undefined).map((_, i) => i), [logos.length]);
   const [gridDims, setGridDims] = useState<[number, number]>([0, 0]);
@@ -107,7 +108,7 @@ export const LogoBackground = React.memo(() => {
     <StyledBackground>
       {logos.map((logoIndex, index) => {
         return (
-          <Logo
+          <NFTLogo
             key={index}
             index={index}
             logoIndex={logoIndex}
@@ -122,7 +123,7 @@ export const LogoBackground = React.memo(() => {
   );
 });
 
-LogoBackground.displayName = "LogoBackground";
+NFTBackground.displayName = "NFTBackgroundLayout";
 
 const StyledBackground = styled.div`
   position: absolute;
@@ -149,7 +150,10 @@ type LogoProps = {
   dims: [number, number];
 };
 
-const Logo = React.memo((props: LogoProps) => {
+const WIDTH = IntroModule.WIDTH - 40;
+const HEIGHT = IntroModule.HEIGHT - 40;
+
+const NFTLogo = React.memo((props: LogoProps) => {
   const { dims, index, showing, hiddenListRef } = props;
   const ref = useRef<HTMLDivElement>(null);
   const [hidden, setHidden] = useState(true);
@@ -162,8 +166,8 @@ const Logo = React.memo((props: LogoProps) => {
         // removed in order to make the logo / intro readable
         const dx = Math.abs(dims[0] / 2 - (bounds.left + CELL_SIZE / 2));
         const dy = Math.abs(dims[1] / 2 - (bounds.top + CELL_SIZE / 2));
-        const hiddenCentral = dx < 200 && dy < 110;
-        const hiddenBottom = dx < 200 && Math.abs(dims[1] - (bounds.top + CELL_SIZE / 2)) < 50;
+        const hiddenCentral = dx < WIDTH / 2 && dy < HEIGHT / 2;
+        const hiddenBottom = dx < WIDTH / 2 && Math.abs(dims[1] - 100 - (bounds.top + CELL_SIZE / 2)) < 50;
 
         setHidden(hiddenCentral || hiddenBottom);
       }
@@ -196,7 +200,7 @@ const Logo = React.memo((props: LogoProps) => {
   );
 });
 
-Logo.displayName = "BackgroundCoin";
+NFTLogo.displayName = "BackgroundCoin";
 
 enum LogoStatus {
   Idle = "Idle",
