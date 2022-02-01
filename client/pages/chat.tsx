@@ -91,6 +91,7 @@ const ChatPage: NextPage = () => {
   const [otherUser, setOtherUser] = useState<string>();
   const [otherERC20, setOtherERC20] = useState<ERC20Result[]>([]);
   const [otherNFT, setOtherNFT] = useState<NFTResult[]>([]);
+  const [matchedNFT, setMatchedNFT] = useState<NFTResult[]>([]);
   const [otherWalletENS, setOtherWalletENS] = useState<string>();
   const [otherWalletAddress, setOtherWalletAddress] = useState<string>();
 
@@ -212,6 +213,7 @@ const ChatPage: NextPage = () => {
         setOtherUser(undefined);
         setOtherERC20([]);
         setOtherNFT([]);
+        setMatchedNFT([]);
         setOtherWalletAddress(undefined);
         setOtherWalletENS(undefined);
       }
@@ -417,8 +419,20 @@ const ChatPage: NextPage = () => {
             break;
           case SignalingEventType.OtherParticipantTokensEvent:
             {
-              setOtherERC20(signalingEvent.allERC20);
+              if (signalingEvent.matchedNFTs.length) {
+                // Show any matched tokens.
+                const matchedOnly: NFTResult[] = [];
+                for (const t of signalingEvent.allNFT) {
+                  if (signalingEvent.matchedNFTs.includes(t.token_address)) {
+                    matchedOnly.push(t);
+                  }
+                }
+                setMatchedNFT(matchedOnly);
+              } else {
+                setMatchedNFT([]);
+              }
               setOtherNFT(signalingEvent.allNFT);
+              setOtherERC20(signalingEvent.allERC20);
               setOtherWalletENS(signalingEvent.walletENS);
               logger.info(`recevied OtherParticipantTokensEvent ${JSON.stringify(signalingEvent)}`);
             }
@@ -735,6 +749,8 @@ const ChatPage: NextPage = () => {
                 otherWalletENS={otherWalletENS}
                 otherERC20={otherERC20}
                 otherNFT={otherNFT}
+                matchedNFT={matchedNFT}
+                chainId={chainId}
               />
             </Draggable>
           )}

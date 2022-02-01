@@ -64,6 +64,7 @@ export interface OtherParticipantTokensEvent {
   walletENS: string;
   allNFT: NFTResult[];
   allERC20: ERC20Result[];
+  matchedNFTs: string[];
 }
 
 export function isOtherParticipantTokensEvent(signalingEvent: any): signalingEvent is OtherParticipantTokensEvent {
