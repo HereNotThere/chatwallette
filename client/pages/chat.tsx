@@ -755,6 +755,7 @@ const ChatPage: NextPage = () => {
                 otherERC20={otherERC20}
                 otherNFT={otherNFT}
                 matchedNFT={matchedNFT}
+                chainId={chainId}
               />
             </Draggable>
           )}

@@ -21,6 +21,7 @@ type Props = {
   otherERC20: ERC20Result[];
   otherNFT: NFTResult[];
   matchedNFT: NFTResult[];
+  chainId?: string;
 };
 
 const ChatPanelTitle = (props: { walletENS?: string; screenName?: string; walletAddress?: string }) => {
@@ -37,7 +38,7 @@ const ChatPanelTitle = (props: { walletENS?: string; screenName?: string; wallet
 export const ChatPanel = (props: Props) => {
   const [inputValue, setInputValue] = useState("");
   const { screenName, walletAddress } = useStore();
-  const { otherWalletENS, otherUsername, otherWalletAddress, chatSession, matchedNFT } = props;
+  const { chainId, otherWalletENS, otherUsername, otherWalletAddress, chatSession, matchedNFT } = props;
   const { messages } = chatSession;
   const otherUser = { walletENS: otherWalletENS, screenName: otherUsername, walletAddress: otherWalletAddress };
 
@@ -81,6 +82,10 @@ export const ChatPanel = (props: Props) => {
 
   const otherTokensLength = matchedNFT.length - randomTokens.length;
 
+  const openseaUrl = useMemo(() => {
+    return chainId === "0x4" ? "https://testnets.opensea.io/" : "https://opensea.io/";
+  }, [chainId]);
+
   useEffect(() => {
     if (!abbrevTokens && randomTokens.length) {
       setAbbrevTokens(randomTokens);
@@ -110,7 +115,7 @@ export const ChatPanel = (props: Props) => {
             </Paragraph>
           )}
           <Paragraph>
-            <a target="_blank" href={"https://opensea.io/" + otherWallet} rel="noopener noreferrer">
+            <a target="_blank" href={openseaUrl + otherWallet} rel="noopener noreferrer">
               <SpanText bold textColor="Turqoise">
                 Click here
               </SpanText>
