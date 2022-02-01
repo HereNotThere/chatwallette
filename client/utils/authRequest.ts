@@ -23,7 +23,7 @@ function getIceServersUrl() {
   }
 }
 
-export async function getIceServers(): Promise<RTCIceServer[] | undefined> {
+export async function getIceServers(signal: AbortSignal): Promise<RTCIceServer[] | undefined> {
   try {
     const response = await fetch(getIceServersUrl(), {
       method: "GET",
@@ -35,6 +35,7 @@ export async function getIceServers(): Promise<RTCIceServer[] | undefined> {
       },
       redirect: "follow",
       referrerPolicy: "no-referrer",
+      signal,
     });
 
     logger.info(`getIceServers`, response);
@@ -46,7 +47,7 @@ export async function getIceServers(): Promise<RTCIceServer[] | undefined> {
     logger.error(`getIceServers error`, err);
   }
 }
-export async function postAuthRequest(request: AuthRequest): Promise<number | void> {
+export async function postAuthRequest(request: AuthRequest, signal: AbortSignal): Promise<number | void> {
   try {
     const response = await fetch(getAuthUrl(), {
       method: "POST",
@@ -59,6 +60,7 @@ export async function postAuthRequest(request: AuthRequest): Promise<number | vo
       redirect: "follow",
       referrerPolicy: "no-referrer",
       body: JSON.stringify(request),
+      signal,
     });
     return response.status;
   } catch (err) {
@@ -70,6 +72,7 @@ export async function getAuthRequestWalletData(
   chainId: string,
   walletAddress: string,
   nonce: string,
+  signal: AbortSignal,
 ): Promise<AuthRequestWalletData | void> {
   try {
     const response = await fetch(getAuthUrl() + `?chainId=${chainId}&walletAddress=${walletAddress}&nonce=${nonce}`, {
@@ -79,16 +82,19 @@ export async function getAuthRequestWalletData(
       credentials: "include",
       redirect: "follow",
       referrerPolicy: "no-referrer",
+      signal,
     });
     const data: AuthRequestWalletData = await response.json();
     logger.info(`getAuthRequestWalletData JSON `, data);
     return data;
   } catch (err) {
-    logger.error(`getAuthRequestWalletData error`, err);
+    if (!signal.aborted) {
+      logger.error(`getAuthRequestWalletData error`, err);
+    }
   }
 }
 
-export async function deleteAuth(): Promise<number | void> {
+export async function deleteAuth(signal: AbortSignal): Promise<number | void> {
   try {
     const response = await fetch(getAuthUrl(), {
       method: "DELETE",
@@ -97,11 +103,14 @@ export async function deleteAuth(): Promise<number | void> {
       credentials: "include",
       redirect: "follow",
       referrerPolicy: "no-referrer",
+      signal,
     });
     const status = response.status;
     logger.info(`deleteAuth `, status);
     return status;
   } catch (err) {
-    logger.error(`deleteAuth error`, err);
+    if (!signal.aborted) {
+      logger.error(`deleteAuth error`, err);
+    }
   }
 }

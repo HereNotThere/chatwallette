@@ -24,7 +24,7 @@ export type RequestAccounts = ReturnType<typeof useWeb3>["requestAccounts"];
 export type UseWeb3 = ReturnType<typeof useWeb3>;
 
 const useWeb3 = () => {
-  const [accounts, setAccounts] = useState<string[]>();
+  const [accounts, setAccounts] = useState<string[]>([]);
   const [chainId, setChainId] = useState<string>();
   const messageId = useRef(0);
   const requestingAccounts = useRef(false);
@@ -76,8 +76,14 @@ const useWeb3 = () => {
       const onAccountsChanged = (accounts: Array<string>) => {
         if (!shutdown) {
           // If the wallet is unlocked, get the accounts
-          logger.info(`onAccountsChanged:\n${accounts.join("\n")}`);
-          setAccounts(accounts);
+          logger.info(`onAccountsChanged: ${accounts.join(":")} accounts.length ${accounts.length}`);
+          setAccounts(oldAccounts =>
+            oldAccounts &&
+            oldAccounts.length === accounts.length &&
+            oldAccounts.every(oldAccount => accounts.some(account => account === oldAccount))
+              ? oldAccounts
+              : accounts,
+          );
           if (accounts.length > 0) {
             setWalletStatus(WalletStatus.Unlocked);
           } else {
@@ -100,7 +106,13 @@ const useWeb3 = () => {
         const [accounts, chainId] = await Promise.all([getAccounts(), getChainId()]);
         if (!shutdown) {
           setChainId(chainId);
-          setAccounts(accounts);
+          setAccounts(oldAccounts =>
+            oldAccounts &&
+            oldAccounts.length === accounts.length &&
+            oldAccounts.every(oldAccount => accounts.some(account => account === oldAccount))
+              ? oldAccounts
+              : accounts,
+          );
           if (accounts.length > 0) {
             setWalletStatus(WalletStatus.Unlocked);
           } else {
@@ -139,7 +151,13 @@ const useWeb3 = () => {
         const chainId: string = await getChainId();
         logger.info(`requestAccounts ${JSON.stringify({ accounts, chainId })}`);
         setChainId(chainId);
-        setAccounts(accounts);
+        setAccounts(oldAccounts =>
+          oldAccounts &&
+          oldAccounts.length === accounts.length &&
+          oldAccounts.every(oldAccount => accounts.some(account => account === oldAccount))
+            ? oldAccounts
+            : accounts,
+        );
         if (accounts.length > 0) {
           setWalletStatus(WalletStatus.Unlocked);
         } else {
