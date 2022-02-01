@@ -1,12 +1,13 @@
 import React from "react";
 import { Box } from "../Box";
+import { Stack } from "../Stack";
 import { HeaderLarge, Paragraph, SpanText } from "../Text/Text";
 import UserForm from "./UserForm";
 
-const IntroModule = () => {
+export const IntroModule = () => {
   return (
-    <>
-      <Box justifyContent="center" alignItems="center" padding>
+    <Stack centerContent alignItems="center" justifyContent="center">
+      <Stack shrink alignItems="center" basis={220} itemSpace="md">
         <Box>
           <HeaderLarge>
             <SpanText textColor="Turqoise">chat</SpanText>
@@ -14,12 +15,13 @@ const IntroModule = () => {
           </HeaderLarge>
         </Box>
         <Box>
-          <Paragraph bold>Talk to fellow jpeg holders</Paragraph>
+          <Paragraph centerText>A secure way to talk to NFT holders</Paragraph>
         </Box>
         <UserForm />
-      </Box>
-    </>
+      </Stack>
+    </Stack>
   );
 };
 
-export default IntroModule;
+IntroModule.WIDTH = 500;
+IntroModule.HEIGHT = 300;

@@ -165,21 +165,13 @@ export const Coin4 = () => (
 );
 
 export const EmailIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fillRule="evenodd"
       clipRule="evenodd"
-      d="M20 4H4V6H2V18H4V20H20V18H22V6H20V4ZM20 6V18H4V6H20Z"
-      fill="#CF47FF"
+      d="M4.5 4H20.5V6H18.5V8H16.5V10H14.5V12H12.5H10.5V10H8.5V8H6.5V6H4.5V4ZM4.5 6V8H6.5V10H8.5V12H10.5V14H12.5H14.5V12H16.5V10H18.5V8H20.5V6H22.5V18H20.5V20H4.5V18H2.5V6H4.5Z"
+      fill="currentColor"
     />
-    <rect x="4" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="10" width="2" height="2" fill="#CF47FF" />
-    <rect x="10" y="12" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="12" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="10" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="6" width="2" height="2" fill="#CF47FF" />
   </svg>
 );
 
@@ -221,56 +213,58 @@ export const InfoIcon = () => (
 );
 
 export const GithubIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="4" y="5" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="7" width="2" height="2" fill="#CF47FF" />
-    <rect x="2" y="7" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="9" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="9" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="5" width="6" height="2" fill="#CF47FF" />
-    <rect x="6" y="7" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="19" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="17" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="17" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="19" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="19" width="2" height="2" fill="#CF47FF" />
-    <rect x="10" y="19" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="19" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="21" width="2" height="2" fill="#CF47FF" />
-    <rect x="10" y="21" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="21" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="21" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="7" width="4" height="2" fill="#CF47FF" />
-    <rect x="8" y="9" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="5" width="6" height="8" fill="#CF47FF" />
-    <rect x="6" y="3" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="17" width="2" height="2" fill="#CF47FF" />
-    <rect x="2" y="17" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="13" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="13" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="13" width="2" height="2" fill="#CF47FF" />
-    <rect x="20" y="11" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="1" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="1" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="3" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="3" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="11" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="11" width="2" height="2" fill="#CF47FF" />
-    <rect x="2" y="9" width="2" height="2" fill="#CF47FF" />
-    <rect x="2" y="11" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="11" width="2" height="4" fill="#CF47FF" />
-    <rect x="6" y="19" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="13" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="13" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="15" width="2" height="2" fill="#CF47FF" />
-    <rect x="10" y="9" width="2" height="8" fill="#CF47FF" />
-    <rect x="16" y="13" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="7" width="2" height="6" fill="#CF47FF" />
-    <rect x="20" y="7" width="2" height="2" fill="#CF47FF" />
-    <rect x="20" y="9" width="2" height="2" fill="#CF47FF" />
-    <rect x="10" y="17" width="4" height="2" fill="#CF47FF" />
-    <rect x="18" y="5" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="3" width="2" height="2" fill="#CF47FF" />
+  <svg width="25" height="24" viewBox="0 0 25 24" xmlns="http://www.w3.org/2000/svg">
+    <g fill="currentColor">
+      <rect x="4.5" y="5" width="2" height="2" />
+      <rect x="4.5" y="7" width="2" height="2" />
+      <rect x="2.5" y="7" width="2" height="2" />
+      <rect x="4.5" y="9" width="2" height="2" />
+      <rect x="6.5" y="9" width="2" height="2" />
+      <rect x="6.5" y="5" width="6" height="2" />
+      <rect x="6.5" y="7" width="2" height="2" />
+      <rect x="4.5" y="19" width="2" height="2" />
+      <rect x="8.5" y="17" width="2" height="2" />
+      <rect x="14.5" y="17" width="2" height="2" />
+      <rect x="14.5" y="19" width="2" height="2" />
+      <rect x="12.5" y="19" width="2" height="2" />
+      <rect x="10.5" y="19" width="2" height="2" />
+      <rect x="8.5" y="19" width="2" height="2" />
+      <rect x="8.5" y="21" width="2" height="2" />
+      <rect x="10.5" y="21" width="2" height="2" />
+      <rect x="12.5" y="21" width="2" height="2" />
+      <rect x="14.5" y="21" width="2" height="2" />
+      <rect x="8.5" y="7" width="4" height="2" />
+      <rect x="8.5" y="9" width="2" height="2" />
+      <rect x="12.5" y="5" width="6" height="8" />
+      <rect x="6.5" y="3" width="2" height="2" />
+      <rect x="4.5" y="17" width="2" height="2" />
+      <rect x="2.5" y="17" width="2" height="2" />
+      <rect x="6.5" y="13" width="2" height="2" />
+      <rect x="4.5" y="13" width="2" height="2" />
+      <rect x="18.5" y="13" width="2" height="2" />
+      <rect x="20.5" y="11" width="2" height="2" />
+      <rect x="4.5" y="1" width="2" height="2" />
+      <rect x="18.5" y="1" width="2" height="2" />
+      <rect x="18.5" y="3" width="2" height="2" />
+      <rect x="4.5" y="3" width="2" height="2" />
+      <rect x="6.5" y="11" width="2" height="2" />
+      <rect x="4.5" y="11" width="2" height="2" />
+      <rect x="2.5" y="9" width="2" height="2" />
+      <rect x="2.5" y="11" width="2" height="2" />
+      <rect x="8.5" y="11" width="2" height="4" />
+      <rect x="6.5" y="19" width="2" height="2" />
+      <rect x="14.5" y="13" width="2" height="2" />
+      <rect x="12.5" y="13" width="2" height="2" />
+      <rect x="12.5" y="15" width="2" height="2" />
+      <rect x="10.5" y="9" width="2" height="8" />
+      <rect x="16.5" y="13" width="2" height="2" />
+      <rect x="18.5" y="7" width="2" height="6" />
+      <rect x="20.5" y="7" width="2" height="2" />
+      <rect x="20.5" y="9" width="2" height="2" />
+      <rect x="10.5" y="17" width="4" height="2" />
+      <rect x="18.5" y="5" width="2" height="2" />
+      <rect x="16.5" y="3" width="2" height="2" />
+    </g>
   </svg>
 );
 
@@ -320,59 +314,51 @@ export const MicOffIcon = () => (
 
 export const QuestionIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="20" y="8" width="2" height="8" fill="#CF47FF" />
-    <rect x="2" y="8" width="2" height="8" fill="#CF47FF" />
-    <rect x="8" y="20" width="8" height="2" fill="#CF47FF" />
-    <rect x="8" y="2" width="8" height="2" fill="#CF47FF" />
-    <rect x="4" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="4" width="2" height="2" fill="#CF47FF" />
-    <rect x="11" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="11" y="12" width="2" height="2" fill="#CF47FF" />
-    <rect x="13" y="10" width="2" height="2" fill="#CF47FF" />
-    <rect x="13" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="11" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="9" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="18" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="18" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="4" width="2" height="2" fill="#CF47FF" />
+    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8.5 2H16.5V4H18.5V6H20.5V8H22.5V16H20.5V18H18.5V20H16.5V22H8.5V20H6.5V18H4.5V16H2.5V8H4.5V6H6.5V4H8.5V2ZM9.5 8H11.5H13.5H15.5V10V12H13.5V10H11.5H9.5V8ZM13.5 12V14H11.5V12H13.5ZM11.5 16H13.5V18H11.5V16Z"
+        fill="currentColor"
+      />
+    </svg>
   </svg>
 );
 
 export const TwitterIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="4" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="6" width="4" height="2" fill="#CF47FF" />
-    <rect x="6" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="7" y="18" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="8" width="4" height="2" fill="#CF47FF" />
-    <rect x="8" y="10" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="6" width="6" height="8" fill="#CF47FF" />
-    <rect x="4" y="4" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="4" width="2" height="2" fill="#CF47FF" />
-    <rect x="2" y="4" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="14" width="2" height="2" fill="#CF47FF" />
-    <rect x="2" y="14" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="14" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="12" width="2" height="2" fill="#CF47FF" />
-    <rect x="8" y="12" width="2" height="6" fill="#CF47FF" />
-    <rect x="6" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="14" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="14" width="2" height="2" fill="#CF47FF" />
-    <rect x="12" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="10" y="10" width="2" height="8" fill="#CF47FF" />
-    <rect x="16" y="14" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="8" width="2" height="6" fill="#CF47FF" />
-    <rect x="20" y="8" width="2" height="2" fill="#CF47FF" />
-    <rect x="20" y="10" width="2" height="2" fill="#CF47FF" />
-    <rect x="9" y="18" width="5" height="2" fill="#CF47FF" />
-    <rect x="18" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="4" width="2" height="2" fill="#CF47FF" />
-    <rect x="14" y="4" width="2" height="2" fill="#CF47FF" />
+  <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g fill="currentColor">
+      <rect x="4.5" y="6" width="2" height="2" />
+      <rect x="6.5" y="6" width="4" height="2" />
+      <rect x="6.5" y="8" width="2" height="2" />
+      <rect x="4.5" y="16" width="2" height="2" />
+      <rect x="7.5" y="18" width="2" height="2" />
+      <rect x="8.5" y="8" width="4" height="2" />
+      <rect x="8.5" y="10" width="2" height="2" />
+      <rect x="12.5" y="6" width="6" height="8" />
+      <rect x="4.5" y="4" width="2" height="2" />
+      <rect x="6.5" y="4" width="2" height="2" />
+      <rect x="2.5" y="4" width="2" height="2" />
+      <rect x="4.5" y="14" width="2" height="2" />
+      <rect x="2.5" y="14" width="2" height="2" />
+      <rect x="6.5" y="14" width="2" height="2" />
+      <rect x="6.5" y="12" width="2" height="2" />
+      <rect x="8.5" y="12" width="2" height="6" />
+      <rect x="6.5" y="16" width="2" height="2" />
+      <rect x="14.5" y="16" width="2" height="2" />
+      <rect x="14.5" y="14" width="2" height="2" />
+      <rect x="12.5" y="14" width="2" height="2" />
+      <rect x="12.5" y="16" width="2" height="2" />
+      <rect x="10.5" y="10" width="2" height="8" />
+      <rect x="16.5" y="14" width="2" height="2" />
+      <rect x="18.5" y="8" width="2" height="6" />
+      <rect x="20.5" y="8" width="2" height="2" />
+      <rect x="20.5" y="10" width="2" height="2" />
+      <rect x="9.5" y="18" width="5" height="2" />
+      <rect x="18.5" y="6" width="2" height="2" />
+      <rect x="16.5" y="4" width="2" height="2" />
+      <rect x="14.5" y="4" width="2" height="2" />
+    </g>
   </svg>
 );
 

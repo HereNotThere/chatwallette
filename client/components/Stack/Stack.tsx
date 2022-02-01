@@ -15,7 +15,7 @@ export const Stack = styled(Box).attrs<StackProps>(({ row, grow, shrink }) => {
     flexFlow: row ? "row" : "column",
   };
 })<StackProps>`
-  position: relative;
+  ${({ fullscreen }) => !fullscreen && `position: relative;`}
   overflow: ${({ overflowVisible }) => (overflowVisible ? "visible" : "hidden")};
   flex-flow: ${({ row }) => (row ? "row" : "column")};
 

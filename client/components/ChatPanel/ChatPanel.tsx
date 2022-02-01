@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ERC20Result, NFTResult } from "../../../protocol/tokens";
 import { ChatSession } from "../../hooks/use_chat_session";
 import { useStore } from "../../store/store";
@@ -99,10 +99,19 @@ export const ChatPanel = (props: Props) => {
     ? otherUsername
     : otherWallet?.slice(0, 5) + "..." + otherWallet?.slice(-5);
 
+  const scrollEndRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = scrollEndRef.current;
+    if (el) {
+      el.scrollIntoView();
+    }
+  }, [messages]);
+
   return (
     <Panel padding="xs" onClose={props.onClose} panelTitle={<ChatPanelTitle {...otherUser} />}>
       <Stack background="panel2" padding="sm" border>
-        <Box grow textColor="LightPurple">
+        <Box textColor="LightPurple" grow style={{ overflow: "scroll" }}>
           <Paragraph>
             <SpanText textColor="LightPurple">You are now talking with </SpanText>
             <SpanText textColor="LightPurple" bold>
@@ -138,8 +147,9 @@ export const ChatPanel = (props: Props) => {
               <strong>{m.screenName}:</strong> {m.message}
             </Paragraph>
           ))}
+          <div ref={scrollEndRef} />
         </Box>
-        <Stack row shrink itemSpace="xs">
+        <Stack row shrink itemSpace="xs" overflowVisible>
           <InputField
             padding="sm"
             border
