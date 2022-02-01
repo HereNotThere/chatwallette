@@ -381,6 +381,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
   ): Promise<void> {
     // Store the serialized version of the wallet.
     const walletKey = StoreKeys.getWalletKey(walletAddress);
+    const tokensBeforeUpdateKey = StoreKeys.getTokensBeforeUpdateKey(walletAddress);
     const tokensKey = StoreKeys.getTokensKey(walletAddress);
 
     // Start a transaction.
@@ -389,13 +390,16 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
     if (multi) {
       multi.set(walletKey, JSON.stringify(walletData));
 
-      // Delete any old tokens data
-      multi.del(tokensKey);
-
-      // Set the updated tokens.
+      // Add the tokens into a temp set.
       walletData.allNFT?.forEach((nft: NFTResult) => {
-        multi.sadd(tokensKey, nft.token_address);
+        multi.sadd(tokensBeforeUpdateKey, nft.token_address);
       });
+
+      // Subtract the excluded tokens.
+      multi.sdiffstore(tokensKey, tokensBeforeUpdateKey, StoreKeys.tokensExcludedKey);
+
+      // Delete the temp set
+      multi.del(tokensBeforeUpdateKey);
 
       // Execute the transaction.
       try {
@@ -403,7 +407,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
         this.emit("onchanged", log, walletAddress);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
-        log.error(`Failed to update tokens. Error: ${e.stack}`);
+        log.error(`Unable to update tokens. Error: ${e.stack}`);
       }
     }
   }
@@ -583,6 +587,10 @@ class StoreKeys {
 
   static getTokensKey(walletAddress: string): string {
     return `tokens:${walletAddress}`;
+  }
+
+  static getTokensBeforeUpdateKey(walletAddress: string): string {
+    return `tokens:${walletAddress}:beforeUpdate`;
   }
 
   static getUserAuthKey(walletAddress: string): string {
