@@ -184,7 +184,11 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>{"Chat Wallette"}</title>
+        <meta property="og:title" content="Chat Wallette" />
         <meta name="description" content="Chat Wallette" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://chatwallette.xyz" />
+        <meta property="og:image" content="https://chatwallette.xyz/chatwallette_og.png" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
