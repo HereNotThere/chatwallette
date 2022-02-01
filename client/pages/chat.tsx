@@ -563,12 +563,25 @@ const ChatPage: NextPage = () => {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const videoPanelRef = useRef<HTMLDivElement | null>(null);
   const chatPanelRef = useRef<HTMLDivElement | null>(null);
+  const deleteAuthAbort = useRef<AbortController>();
 
   const onLogout = useCallback(async () => {
-    console.log(`onLogout`);
-    await deleteAuth();
-    setIsAuthenticated(false);
+    if (!deleteAuthAbort.current) {
+      logger.info(`onLogout`);
+      const abort = new AbortController();
+      deleteAuthAbort.current = abort;
+      await deleteAuth(abort.signal);
+      deleteAuthAbort.current = undefined;
+      if (!abort.signal.aborted) {
+        setIsAuthenticated(false);
+      }
+    } else {
+      logger.warn(`onLogout called while waiting on deleteAuth, ignoring`);
+    }
   }, [setIsAuthenticated]);
+
+  // If deleteAuth is running during unmount, abort the request
+  useEffect(() => () => deleteAuthAbort.current?.abort(), []);
 
   const [lastDraggedPanelIndex, setLastDraggedPanelIndex] = useState(0);
   const onStartDrag = useCallback((index: number) => {

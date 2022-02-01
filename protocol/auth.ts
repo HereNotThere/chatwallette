@@ -30,4 +30,10 @@ export interface AuthRequestData {
   screenName: string;
 }
 
+export enum AuthenticatingStatus {
+  Unauthenticated = "Unauthenticated",
+  SigningMessage = "SigningMessage",
+  Authenticated = "Authenticated",
+}
+
 export const authCookieName = "chatWalletteAuth";

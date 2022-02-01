@@ -83,75 +83,97 @@ const Home: NextPage = () => {
   const { walletStatus, accounts, chainId } = useWeb3Context();
   const chainName = useMemo(() => (chainId === "0x1" ? "Ethereum Mainnet" : chainId), [chainId]);
 
-  const onWalletAvailable = useCallback(async () => {
-    logger.info(`onWalletAvailable`);
-    try {
-      if (chainId && accounts && accounts.length > 0 && accounts[0]) {
-        const nonceArray = new Uint8Array(16);
-        self.crypto.getRandomValues(nonceArray);
+  const fetchAuthData = useCallback(
+    async (signal: AbortSignal) => {
+      logger.info(`fetchAuthData`, signal.aborted);
+      try {
+        if (chainId && accounts && accounts.length > 0 && accounts[0]) {
+          const nonceArray = new Uint8Array(16);
+          self.crypto.getRandomValues(nonceArray);
+          logger.info(`fetchAuthData finished  getRandomValues`, signal.aborted);
 
-        // Since this is going in the URL query string it needs to be URL safe
-        const nonce = Base64.fromUint8Array(nonceArray, true);
-        const [authRequestWalletData, keypair] = await Promise.all([
-          await getAuthRequestWalletData(chainId, accounts[0], nonce),
-          await window.crypto.subtle.generateKey(
-            {
-              name: "ECDH",
-              namedCurve: "P-384",
-            },
-            true,
-            ["deriveKey"],
-          ),
-        ]);
-        if (!authRequestWalletData) {
-          logger.error(`onWalletAvailable failed getting authRequestWalletData`);
-          throw new Error("Failed to obtain authRequestWalletData");
+          // Since this is going in the URL query string it needs to be URL safe
+          const nonce = Base64.fromUint8Array(nonceArray, true);
+          const [authRequestWalletData, keypair] = await Promise.all([
+            await getAuthRequestWalletData(chainId, accounts[0], nonce, signal),
+            await window.crypto.subtle.generateKey(
+              {
+                name: "ECDH",
+                namedCurve: "P-384",
+              },
+              true,
+              ["deriveKey"],
+            ),
+          ]);
+          logger.info(`fetchAuthData finished  authRequestWalletData/keypair`, signal.aborted);
+          if (signal.aborted) {
+            logger.warn(`fetchAuthData abandoned authRequestWalletData/keypair`, signal.aborted);
+            return;
+          }
+          if (!authRequestWalletData) {
+            logger.error(`fetchAuthData failed getting authRequestWalletData`);
+            return;
+          }
+          const [exportedPrivateKey, exportedPublicKey] = await Promise.all([
+            keypair.privateKey ? await crypto.subtle.exportKey("jwk", keypair.privateKey) : undefined,
+            keypair.publicKey ? await crypto.subtle.exportKey("jwk", keypair.publicKey) : undefined,
+          ]);
+          logger.info(`fetchAuthData finished  exportedPrivateKey/exportedPublicKey`, signal.aborted);
+          if (signal.aborted) {
+            logger.warn(`fetchAuthData abandoned exportedPrivateKey/exportedPublicKey`, signal.aborted);
+            return;
+          }
+          const exportedKeypair = JSON.stringify({ publicKey: exportedPublicKey, privateKey: exportedPrivateKey });
+          const walletAddress = accounts[0].toLowerCase();
+          return { walletAddress, authRequestWalletData, exportedKeypair };
         }
-        setAuthRequestWalletData(authRequestWalletData);
-        const walletAddress = accounts[0].toLowerCase();
-        setWalletAddress(walletAddress);
-        const exportedPrivateKey = keypair.privateKey
-          ? await crypto.subtle.exportKey("jwk", keypair.privateKey)
-          : undefined;
-        const exportedPublicKey = keypair.publicKey
-          ? await crypto.subtle.exportKey("jwk", keypair.publicKey)
-          : undefined;
-
-        const exportedKeypair = JSON.stringify({ publicKey: exportedPublicKey, privateKey: exportedPrivateKey });
-        setKeypair(exportedKeypair);
+      } catch (err) {
+        logger.error(`error in fetchAuthData`, err);
       }
-    } catch (err) {
-      logger.error(`error in onWalletAvailable`, err);
-    }
-  }, [accounts, chainId, setAuthRequestWalletData, setKeypair, setWalletAddress]);
+    },
+    [accounts, chainId],
+  );
 
-  const connectingWallet = useRef<"Unconnected" | "Connecting" | "Connected">("Unconnected");
+  const fetchingAuthData = useRef(false);
 
   useEffect(() => {
-    if (
-      connectingWallet.current === "Unconnected" &&
-      walletStatus === WalletStatus.Unlocked &&
-      chainId &&
-      accounts &&
-      accounts.length > 0 &&
-      accounts[0]
-    ) {
+    // IF we have everything we need to fetch auth data, but aren't fetching, start fetching
+    if (fetchingAuthData.current === false && !authData && chainId && accounts && accounts.length > 0 && accounts[0]) {
+      logger.info(
+        `Fetching authData as the user just unlocked the wallet`,
+        fetchingAuthData.current,
+        accounts,
+        chainId,
+        authData,
+      );
+      fetchingAuthData.current = true;
+      const abort = new AbortController();
+      let done = false;
       void (async () => {
-        logger.info(`Fetching authData as the user just unlocked the wallet`);
-        connectingWallet.current = "Connecting";
-        await onWalletAvailable();
-        connectingWallet.current = "Connected";
-        logger.info(`Fetching authData as the user just unlocked the wallet - done`);
+        try {
+          const result = await fetchAuthData(abort.signal);
+          done = true;
+          if (!abort.signal.aborted && result) {
+            const { walletAddress, authRequestWalletData, exportedKeypair } = result;
+            setWalletAddress(walletAddress);
+            setAuthRequestWalletData(authRequestWalletData);
+            setKeypair(exportedKeypair);
+            logger.info(`Fetching authData as the user just unlocked the wallet - done`);
+          } else {
+            logger.warn(`Fetching authData request abandoned`);
+          }
+        } finally {
+          fetchingAuthData.current = false;
+        }
       })();
+      return () => {
+        if (!done) {
+          logger.warn(`Fetching authData aborting request`);
+          abort.abort();
+        }
+      };
     }
-  }, [accounts, chainId, onWalletAvailable, walletStatus]);
-
-  useEffect(() => {
-    if (connectingWallet.current !== "Unconnected" && !chainId && (!accounts || accounts.length === 0)) {
-      logger.info(`connectingWallet.current=Unconnected`);
-      connectingWallet.current = "Unconnected";
-    }
-  }, [accounts, chainId]);
+  }, [accounts, authData, chainId, fetchAuthData, setAuthRequestWalletData, setKeypair, setWalletAddress]);
 
   useEffect(() => {
     if (walletStatus === WalletStatus.Unknown && authData && isAuthenticated) {
@@ -159,27 +181,6 @@ const Home: NextPage = () => {
       setIsAuthenticated(false);
     }
   }, [authData, isAuthenticated, setIsAuthenticated, walletStatus]);
-
-  useEffect(() => {
-    if (
-      connectingWallet.current === "Connected" &&
-      walletStatus === WalletStatus.Unlocked &&
-      chainId &&
-      accounts &&
-      accounts.length > 0 &&
-      accounts[0] &&
-      !authData &&
-      !keypair
-    ) {
-      void (async () => {
-        logger.info(`Re-fetching authData since the user logged out but the wallet is still unlocked`);
-        connectingWallet.current = "Connecting";
-        await onWalletAvailable();
-        connectingWallet.current = "Connected";
-        logger.info(`Re-fetching authData since the user logged out but the wallet is still unlocked - done`);
-      })();
-    }
-  }, [accounts, authData, chainId, keypair, onWalletAvailable, walletStatus]);
 
   return (
     <>

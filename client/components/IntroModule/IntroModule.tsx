@@ -1,5 +1,4 @@
-import React, { Suspense } from "react";
-import { NoSSR } from "../../pages/_app";
+import React from "react";
 import { Box } from "../Box";
 import { HeaderLarge, Paragraph, SpanText } from "../Text/Text";
 import UserForm from "./UserForm";
@@ -17,9 +16,7 @@ const IntroModule = () => {
         <Box>
           <Paragraph bold>Talk to fellow jpeg holders</Paragraph>
         </Box>
-        <NoSSR>
-          <Suspense fallback={<Box style={{ height: 56 }} />}>{<UserForm />}</Suspense>
-        </NoSSR>
+        <UserForm />
       </Box>
     </>
   );
