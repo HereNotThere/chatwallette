@@ -1,6 +1,6 @@
 import stringify from "fast-json-stable-stringify";
 import keccak256 from "keccak256";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AuthenticatingStatus, AuthRequestData } from "../../protocol/auth";
 import { useStore } from "../store/store";
 import { getIceServers, postAuthRequest } from "../utils/authRequest";
@@ -19,28 +19,7 @@ Your authentication status will reset after 24 hours.
 Hash: ${hash}`;
 
 export const useWeb3Auth = () => {
-  // If the user is in the handleLoginClick flow for 45 seconds, abort and let them try again
-  // If handleLoginClick is still running when useWeb3Auth unmounts, abort it
-  const timer = useRef<NodeJS.Timeout | undefined>();
   const [abort, setAbort] = useState<AbortController>();
-  useEffect(
-    () => () => {
-      abort?.abort();
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-    },
-    [abort],
-  );
-
-  useEffect(
-    () => () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-      }
-    },
-    [],
-  );
 
   const {
     keypair,
@@ -55,26 +34,19 @@ export const useWeb3Auth = () => {
 
   const { accounts, chainId, sign } = useWeb3Context();
 
+  // If the user is in the handleLoginClick flow for 45 seconds, abort and let them try again
+  // If handleLoginClick is still running when useWeb3Auth unmounts, abort it
   useEffect(() => {
-    if (timer.current) {
-      logger.warn(`Prior timer should have already been cleared`);
-      clearTimeout(timer.current);
-      timer.current = undefined;
-    }
-
-    timer.current = setTimeout(async () => {
-      if (abort) {
+    if (abort) {
+      const timer = setTimeout(() => {
         abort.abort();
-      } else {
-        logger.warn(`handleLoginClick timed out but there was nothing to abort`);
-      }
-    }, 45000);
-    return () => {
-      if (timer.current) {
-        clearTimeout(timer.current);
-        timer.current = undefined;
-      }
-    };
+      }, 45000);
+      return () => {
+        console.log(`useEffect useWeb3Auth abort cleanup`);
+        abort.abort();
+        clearTimeout(timer);
+      };
+    }
   }, [abort]);
 
   const walletAddress = useMemo(() => (accounts && accounts.length > 0 ? accounts[0] : undefined), [accounts]);
@@ -159,10 +131,8 @@ export const useWeb3Auth = () => {
           setUnauthenticated();
           logger.error(`error signing in`, err);
         } finally {
-          if (timer.current) {
-            clearTimeout(timer.current);
-            timer.current = undefined;
-          }
+          // This will trigger the cancelation of the timer as well as signal this abort
+          // See the related useEffect
           setAbort(undefined);
         }
       } else {
