@@ -179,6 +179,7 @@ export class WebRTCSignalingServer {
           walletENS: callerWalletData.walletENS ?? "",
           allNFT: callerWalletData.allNFT ?? [],
           allERC20: callerWalletData.allERC20 ?? [],
+          matchedNFTs: matchedTokens ?? [],
         };
 
         const callerCalleesData: OtherParticipantTokensEvent = {
@@ -187,6 +188,7 @@ export class WebRTCSignalingServer {
           walletENS: calleeWalletData.walletENS ?? "",
           allNFT: calleeWalletData.allNFT ?? [],
           allERC20: calleeWalletData.allERC20 ?? [],
+          matchedNFTs: matchedTokens ?? [],
         };
 
         await Promise.all([

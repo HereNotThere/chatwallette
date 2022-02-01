@@ -20,6 +20,7 @@ type Props = {
   chatSession: ChatSession;
   otherERC20: ERC20Result[];
   otherNFT: NFTResult[];
+  matchedNFT: NFTResult[];
 };
 
 const ChatPanelTitle = (props: { walletENS?: string; screenName?: string; walletAddress?: string }) => {
@@ -35,8 +36,8 @@ const ChatPanelTitle = (props: { walletENS?: string; screenName?: string; wallet
 
 export const ChatPanel = (props: Props) => {
   const [inputValue, setInputValue] = useState("");
-  const { screenName, walletAddress, selfERC20, selfNFT } = useStore();
-  const { otherWalletENS, otherUsername, otherWalletAddress, chatSession, otherERC20, otherNFT } = props;
+  const { screenName, walletAddress } = useStore();
+  const { otherWalletENS, otherUsername, otherWalletAddress, chatSession, matchedNFT } = props;
   const { messages } = chatSession;
   const otherUser = { walletENS: otherWalletENS, screenName: otherUsername, walletAddress: otherWalletAddress };
 
@@ -68,24 +69,17 @@ export const ChatPanel = (props: Props) => {
     [messages],
   );
 
-  const matchingTokens = useMemo(() => {
-    return {
-      erc20: selfERC20.filter(x => otherERC20.some(y => x.token_address === y.token_address)),
-      nft: selfNFT.filter(x => otherNFT.some(y => x.token_address === y.token_address)),
-    };
-  }, [selfERC20, selfNFT, otherERC20, otherNFT]);
-
   const [abbrevTokens, setAbbrevTokens] = useState<string[]>();
 
   // Pick up to 3 random tokens from the list of token names and symbols
   const randomTokens = useMemo(() => {
-    const tokenNames = matchingTokens.nft.map(nft => nft.name).filter(name => name);
+    const tokenNames = matchedNFT.map(nft => nft.name).filter(name => name);
     return tokenNames.slice(0, 3).map(function (this: string[]) {
       return this.splice(Math.floor(Math.random() * this.length), 1)[0];
     }, tokenNames.slice());
-  }, [matchingTokens]);
+  }, [matchedNFT]);
 
-  const otherTokensLength = matchingTokens.nft.length - randomTokens.length;
+  const otherTokensLength = matchedNFT.length - randomTokens.length;
 
   useEffect(() => {
     if (!abbrevTokens && randomTokens.length) {
@@ -125,10 +119,10 @@ export const ChatPanel = (props: Props) => {
             <SpanText>{" to see all their holdings"}</SpanText>
           </Paragraph>
 
-          {matchingTokens.nft.length > 0 && (
+          {matchedNFT.length > 0 && (
             <>
               <Paragraph></Paragraph>
-              <Tokens key={"nft"} nft={matchingTokens.nft} limit={4} />
+              <Tokens key={"nft"} nft={matchedNFT} limit={4} />
               <Paragraph></Paragraph>
             </>
           )}
