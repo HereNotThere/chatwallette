@@ -32,7 +32,7 @@ import { Static, Type } from "@sinclair/typebox";
 import { SSEPlugin } from "./sse/sse-plugin";
 import { WebRTCSignalingServer } from "./web_rtc_signaling_server";
 import { signalingEvents, signalingRequest } from "../../protocol/web_rtc_signaling_common";
-import { authCookieName, AuthRequestWalletData } from "../../protocol/auth";
+import { authCookieName } from "../../protocol/auth";
 
 import crypto from "crypto";
 
@@ -187,10 +187,6 @@ async function getSecretByName(keyName: string) {
     return undefined;
   }
 }
-
-const walletToAuthRequestWalletData: {
-  [walletAddress: string]: AuthRequestWalletData | undefined;
-} = {} as const;
 
 process.on("uncaughtException", (err, origin) => {
   fs.writeSync(
@@ -551,7 +547,7 @@ const start = async () => {
             allERC20: walletData.allERC20,
             walletENS: walletData.walletENS,
           };
-          walletToAuthRequestWalletData[walletAddress] = authRequestData;
+          await walletConnectionStore.addAuthRequestWalletData(request.log, walletAddress, authRequestData);
 
           request.log.info(`authRequestData for wallet ${walletAddress} on chainId: ${chainId}`);
 
@@ -621,7 +617,7 @@ const start = async () => {
 
       request.log.info(`start /auth POST hashes and wallets match`);
       // Check to see if this well formed request matches the nonce and sessionId we've issued
-      const authRequestWalletData = walletToAuthRequestWalletData[walletAddress];
+      const authRequestWalletData = await walletConnectionStore.getAuthRequestWalletData(request.log, walletAddress);
 
       if (authRequestData && authRequestWalletData) {
         if (nonce !== authRequestData.nonce || sessionId !== authRequestData.sessionId) {
@@ -638,7 +634,7 @@ const start = async () => {
 
           // At this point this is a valid auth request
           // Check if another client is connected, sign it out, and make this the new client
-          delete walletToAuthRequestWalletData[walletAddress];
+          await walletConnectionStore.delAuthRequestWalletData(request.log, walletAddress);
           request.log.info(`start /auth POST before addAuthenticatedUser`);
           await signalingServer.addAuthenticatedUser(request.log, walletAddress, {
             message,
