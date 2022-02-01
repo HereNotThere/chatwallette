@@ -1,8 +1,7 @@
 import createStore from "zustand";
 import { configurePersist } from "zustand-persist";
-import { AuthRequestWalletData } from "../../protocol/auth";
+import { AuthRequestWalletData, AuthenticatingStatus } from "../../protocol/auth";
 import { ERC20Result, NFTResult } from "../../protocol/tokens";
-import { AuthenticatingStatus } from "../hooks/use_web3_auth";
 
 const noopStore = {
   setItem: (key: string, value: string) => undefined,

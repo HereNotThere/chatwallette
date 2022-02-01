@@ -1,10 +1,9 @@
 import stringify from "fast-json-stable-stringify";
 import keccak256 from "keccak256";
-import { useCallback, useEffect, useMemo } from "react";
-import { AuthRequestData } from "../../protocol/auth";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AuthenticatingStatus, AuthRequestData } from "../../protocol/auth";
 import { useStore } from "../store/store";
-import { deleteAuth, getIceServers, postAuthRequest } from "../utils/authRequest";
-import { usePrevious } from "./use_previous";
+import { getIceServers, postAuthRequest } from "../utils/authRequest";
 import { logger } from "../utils/logger";
 import { useWeb3Context } from "./use_web3";
 
@@ -19,59 +18,13 @@ Your authentication status will reset after 24 hours.
 
 Hash: ${hash}`;
 
-export enum AuthenticatingStatus {
-  Unauthenticated = "Unauthenticated",
-  SigningMessage = "SigningMessage",
-  Authenticated = "Authenticated",
-}
-
-let timer: NodeJS.Timeout | undefined;
-
-function stopLoginTimer(): void {
-  if (timer) {
-    clearTimeout(timer);
-  }
-  timer = undefined;
-}
-
-function useLoginTimer() {
-  const { authenticatingStatus, setIsAuthenticated, setAuthenticatingStatus } = useStore();
-  const prevAuthStatus = usePrevious<AuthenticatingStatus>(authenticatingStatus);
-
-  const startLoginTimer = useCallback(() => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    timer = setTimeout(async () => {
-      await deleteAuth();
-      setAuthenticatingStatus(AuthenticatingStatus.Unauthenticated);
-      setIsAuthenticated(false);
-      logger.error(`Login timed out. Deleted and reset auth states`);
-    }, 45000);
-  }, [setAuthenticatingStatus, setIsAuthenticated]);
-
-  useEffect(() => {
-    if (prevAuthStatus !== authenticatingStatus) {
-      switch (authenticatingStatus) {
-        case AuthenticatingStatus.SigningMessage:
-          startLoginTimer();
-          break;
-        default:
-          stopLoginTimer();
-          break;
-      }
-    }
-  }, [authenticatingStatus, prevAuthStatus, startLoginTimer]);
-
-  useEffect(() => {
-    return () => {
-      stopLoginTimer();
-    };
-  }, []);
-}
-
 export const useWeb3Auth = () => {
+  // If the user is in the handleLoginClick flow for 45 seconds, abort and let them try again
+  // If handleLoginClick is still running when useWeb3Auth unmounts, abort it
+  const timer = useRef<NodeJS.Timeout | undefined>();
+  const [abort, setAbort] = useState<AbortController>();
+  useEffect(() => () => abort?.abort(), [abort]);
+
   const {
     keypair,
     authData,
@@ -80,11 +33,32 @@ export const useWeb3Auth = () => {
     setIceServers,
     authenticatingStatus,
     setAuthenticatingStatus,
+    setScreenName,
   } = useStore();
 
   const { accounts, chainId, sign } = useWeb3Context();
 
-  useLoginTimer();
+  useEffect(() => {
+    if (timer.current) {
+      logger.warn(`Prior timer should have already been cleared`);
+      clearTimeout(timer.current);
+      timer.current = undefined;
+    }
+
+    timer.current = setTimeout(async () => {
+      if (abort) {
+        abort.abort();
+      } else {
+        logger.warn(`handleLoginClick timed out but there was nothing to abort`);
+      }
+    }, 45000);
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+        timer.current = undefined;
+      }
+    };
+  }, [abort]);
 
   const walletAddress = useMemo(() => (accounts && accounts.length > 0 ? accounts[0] : undefined), [accounts]);
 
@@ -98,6 +72,8 @@ export const useWeb3Auth = () => {
       logger.info(`handleLoginClick start`, { walletAddress, chainId, authData });
 
       if (walletAddress && chainId && keypair && authData) {
+        const localAbort = new AbortController();
+        setAbort(localAbort);
         try {
           logger.info(`handleLoginClick SigningMessage`);
           setAuthenticatingStatus(AuthenticatingStatus.SigningMessage);
@@ -116,15 +92,25 @@ export const useWeb3Auth = () => {
 
           const message = signInMessage(screenName, hash);
           const signature = await sign(message, walletAddress);
+          if (localAbort.signal.aborted) {
+            throw Error(`handleLoginClick aborted at sign`);
+          }
 
           logger.info(`handleLoginClick after signInMessage`, { message, signature, authRequestData });
 
           if (signature) {
             try {
-              const status = await postAuthRequest({ message, signature, authRequestData });
+              const status = await postAuthRequest({ message, signature, authRequestData }, localAbort.signal);
+              if (localAbort.signal.aborted) {
+                throw Error(`handleLoginClick aborted at postAuthRequest`);
+              }
+
               switch (status) {
                 case 200: {
-                  const iceServers = await getIceServers();
+                  const iceServers = await getIceServers(localAbort.signal);
+                  if (localAbort.signal.aborted) {
+                    throw Error(`handleLoginClick aborted at getIceServers`);
+                  }
                   logger.info(`got iceServers ${JSON.stringify(iceServers)}`, iceServers);
                   if (iceServers) {
                     setIceServers(iceServers);
@@ -132,6 +118,7 @@ export const useWeb3Auth = () => {
                   setAuthenticatingStatus(AuthenticatingStatus.Authenticated);
                   setIsAuthenticated(true);
                   setWalletAddress(walletAddress);
+                  setScreenName(screenName);
                   break;
                 }
                 case 401: {
@@ -154,6 +141,12 @@ export const useWeb3Auth = () => {
         } catch (err) {
           setUnauthenticated();
           logger.error(`error signing in`, err);
+        } finally {
+          if (timer.current) {
+            clearTimeout(timer.current);
+            timer.current = undefined;
+          }
+          setAbort(undefined);
         }
       } else {
         logger.warn(`handleLoginClick ${JSON.stringify({ walletAddress, chainId, keypair, authData })}`);
@@ -166,6 +159,7 @@ export const useWeb3Auth = () => {
       setAuthenticatingStatus,
       setIceServers,
       setIsAuthenticated,
+      setScreenName,
       setUnauthenticated,
       setWalletAddress,
       sign,
