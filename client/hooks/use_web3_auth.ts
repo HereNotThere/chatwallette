@@ -23,7 +23,24 @@ export const useWeb3Auth = () => {
   // If handleLoginClick is still running when useWeb3Auth unmounts, abort it
   const timer = useRef<NodeJS.Timeout | undefined>();
   const [abort, setAbort] = useState<AbortController>();
-  useEffect(() => () => abort?.abort(), [abort]);
+  useEffect(
+    () => () => {
+      abort?.abort();
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
+    },
+    [abort],
+  );
+
+  useEffect(
+    () => () => {
+      if (timer.current) {
+        clearTimeout(timer.current);
+      }
+    },
+    [],
+  );
 
   const {
     keypair,
