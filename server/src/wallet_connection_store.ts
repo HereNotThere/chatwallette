@@ -7,6 +7,7 @@ import { FastifyLoggerInstance } from "fastify";
 import IORedis from "ioredis";
 import { MatchCriteria } from "../../protocol/signaling_types";
 import { NFTResult } from "../../protocol/tokens";
+import { AuthRequestWalletData } from "../../protocol/auth";
 
 const REDISHOST = process.env.REDISHOST ?? "localhost";
 const REDISPORT = process.env.REDISPORT ?? "6379";
@@ -14,6 +15,7 @@ const REDISPORT = process.env.REDISPORT ?? "6379";
 type WalletToConnection = { [walletAddress: string]: Connection | undefined };
 type WalletToUserAuthData = { [walletAddress: string]: UserAuthData | undefined };
 type WalletToWalletData = { [walletAddress: string]: WalletData | undefined };
+type WalletToAuthRequestWalletData = { [walletAddress: string]: AuthRequestWalletData | undefined };
 
 interface WalletConnectionEvents {
   onchanged: (log: FastifyLoggerInstance, walletAddress: string) => void;
@@ -39,6 +41,16 @@ export interface WalletConnectionStore {
   updateExcludedTokens(excludedTokens: string[]): Promise<void>;
   updateMatchCriteria(log: FastifyLoggerInstance, walletAddress: string, matchCriteria: MatchCriteria): Promise<void>;
   updateWalletData(log: FastifyLoggerInstance, walletAddress: string, wallet: WalletData): Promise<void>;
+  addAuthRequestWalletData(
+    log: FastifyLoggerInstance,
+    walletAddress: string,
+    authRequestWalletData: AuthRequestWalletData,
+  ): Promise<void>;
+  getAuthRequestWalletData(
+    log: FastifyLoggerInstance,
+    walletAddress: string,
+  ): Promise<AuthRequestWalletData | undefined>;
+  delAuthRequestWalletData(log: FastifyLoggerInstance, walletAddress: string): Promise<void>;
 }
 
 class WalletConnectionStoreInMemory extends EventEmitter implements WalletConnectionStore {
@@ -47,6 +59,7 @@ class WalletConnectionStoreInMemory extends EventEmitter implements WalletConnec
   private walletToConnection: WalletToConnection = {} as const;
   private walletToUserAuthData: WalletToUserAuthData = {} as const;
   private walletToWalletData: WalletToWalletData = {} as const;
+  private walletToAuthRequestWalletData: WalletToAuthRequestWalletData = {} as const;
 
   public async addAuthenticatedUser(log: FastifyLoggerInstance, walletAddress: string, userAuthData: UserAuthData) {
     this.walletToUserAuthData[walletAddress] = userAuthData;
@@ -160,6 +173,25 @@ class WalletConnectionStoreInMemory extends EventEmitter implements WalletConnec
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async updateExcludedTokens(excludedTokens: string[]): Promise<void> {
     // Not implemented
+  }
+
+  public async addAuthRequestWalletData(
+    log: FastifyLoggerInstance,
+    walletAddress: string,
+    authRequestWalletData: AuthRequestWalletData,
+  ): Promise<void> {
+    this.walletToAuthRequestWalletData[walletAddress] = authRequestWalletData;
+  }
+
+  public async getAuthRequestWalletData(
+    log: FastifyLoggerInstance,
+    walletAddress: string,
+  ): Promise<AuthRequestWalletData | undefined> {
+    return this.walletToAuthRequestWalletData[walletAddress];
+  }
+
+  public async delAuthRequestWalletData(log: FastifyLoggerInstance, walletAddress: string): Promise<void> {
+    delete this.walletToAuthRequestWalletData[walletAddress];
   }
 }
 
@@ -569,6 +601,31 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
       }
     }
   }
+
+  public async addAuthRequestWalletData(
+    log: FastifyLoggerInstance,
+    walletAddress: string,
+    authRequestWalletData: AuthRequestWalletData,
+  ): Promise<void> {
+    const userAuthWalletDataKey = StoreKeys.getUserAuthWalletDataKey(walletAddress);
+    await this.redisClient.set(userAuthWalletDataKey, JSON.stringify(authRequestWalletData));
+  }
+  public async getAuthRequestWalletData(
+    log: FastifyLoggerInstance,
+    walletAddress: string,
+  ): Promise<AuthRequestWalletData | undefined> {
+    const userAuthWalletDataKey = StoreKeys.getUserAuthWalletDataKey(walletAddress);
+    const data = await this.redisClient.get(userAuthWalletDataKey);
+    if (!data) {
+      log.warn(`Unable to find AuthRequestWalletData for wallet ${walletAddress}`);
+    }
+    return data ? JSON.parse(data) : undefined;
+  }
+
+  public async delAuthRequestWalletData(log: FastifyLoggerInstance, walletAddress: string): Promise<void> {
+    const userAuthWalletDataKey = StoreKeys.getUserAuthWalletDataKey(walletAddress);
+    await this.redisClient.del(userAuthWalletDataKey);
+  }
 }
 
 class StoreKeys {
@@ -595,6 +652,9 @@ class StoreKeys {
 
   static getUserAuthKey(walletAddress: string): string {
     return `userAuth:${walletAddress}`;
+  }
+  static getUserAuthWalletDataKey(walletAddress: string): string {
+    return `userAuthWalletDataKey:${walletAddress}`;
   }
 }
 
