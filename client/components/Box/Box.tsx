@@ -10,6 +10,7 @@ export type BoxProps = {
   fullscreen?: boolean;
   grow?: boolean | number;
   shrink?: boolean | number;
+  basis?: number | string;
   alignItems?: "start" | "end" | "center";
   justifyContent?: "start" | "end" | "center";
   centerContent?: boolean;
@@ -61,6 +62,7 @@ export const Box = styled.div.attrs<BoxProps>(({ space, padding, grow }) => {
     `} 
   ${({ grow }) => grow && `flex-grow: ${grow === true ? 1 : grow};`} 
   ${({ shrink }) => shrink && `flex-shrink: ${shrink === true ? 1 : shrink};`} 
+  ${({ basis }) => basis && `flex-basis: ${typeof basis === "number" ? `${basis}px` : basis};`} 
   ${({ alignItems }) => alignItems && `align-items: ${alignItems};`} 
   ${({ justifyContent }) => justifyContent && `justify-content: ${justifyContent};`} 
   ${({ aspect }) => aspect && `aspect-ratio: ${aspect};`} 
@@ -101,11 +103,4 @@ export const Box = styled.div.attrs<BoxProps>(({ space, padding, grow }) => {
         color: var(--color);
       }
     `}
-  
-   .Stack--column > & {
-    /* ${({ space }) => typeof space === "string" && `margin-right: var(--spacing-${space});`} */
-  }
-  .Stack--row > & {
-    /* ${({ space }) => typeof space === "string" && `margin-bottom: var(--spacing-${space});`} */
-  }
 `;
