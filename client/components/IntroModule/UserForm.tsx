@@ -118,7 +118,7 @@ export const UserForm = () => {
                 onKeyDown={onKeyDown}
                 size={16}
                 autoFocus
-                placeholder="Enter username"
+                placeholder="Pick a username"
                 borderColor={error ? "NeonPurple" : "GrapePurple"}
               />
               <Button icon={<ArrowIcon />} border={false} onClick={onLoginClick}></Button>
