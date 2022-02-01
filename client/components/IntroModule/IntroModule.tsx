@@ -7,14 +7,14 @@ import UserForm from "./UserForm";
 export const IntroModule = () => {
   return (
     <Stack centerContent alignItems="center" justifyContent="center">
-      <Stack shrink alignItems="center" basis={220} itemSpace="md">
+      <Stack shrink alignItems="center" basis={220} itemSpace="sm">
         <Box>
           <HeaderLarge>
             <SpanText textColor="Turqoise">chat</SpanText>
             <SpanText textColor="NeonPurple">wallette</SpanText>
           </HeaderLarge>
         </Box>
-        <Box>
+        <Box padding="xs">
           <Paragraph centerText>A secure way to talk to NFT holders</Paragraph>
         </Box>
         <UserForm />
