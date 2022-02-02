@@ -33,6 +33,7 @@
     "gcp-metadata": "^4.3.1",
     "ioredis": "^4.28.3",
     "keccak256": "^1.0.6",
+    "node-fetch": "^3.2.0",
     "source-map-support": "^0.5.21"
   },
   "devDependencies": {
