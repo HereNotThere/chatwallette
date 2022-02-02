@@ -56,7 +56,7 @@ export const Terminal = (props: Props) => {
         <SpanText>Welcome to ChatWallette, </SpanText>
         <DisplayName {...user} />
       </>,
-      "Here you can talk to fellow jpeg holders",
+      "Here you can talk to fellow NFT holders",
     ],
     [user],
   );
