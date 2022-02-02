@@ -1,6 +1,8 @@
+import { FastifyLoggerInstance } from "fastify";
 import fetch from "node-fetch";
 
 const TRACKING_ID = process.env.ANALYTICS_ID;
+export const SERVER_ID = "server";
 
 export interface AnalyticsEvent {
   clientId: string;
@@ -10,7 +12,7 @@ export interface AnalyticsEvent {
   value?: number;
 }
 
-export async function sendAnalytics(event: AnalyticsEvent): Promise<void> {
+export async function sendAnalytics(event: AnalyticsEvent, logInstance?: FastifyLoggerInstance): Promise<void> {
   if (TRACKING_ID) {
     const params = new URLSearchParams();
     // Required.
@@ -28,7 +30,15 @@ export async function sendAnalytics(event: AnalyticsEvent): Promise<void> {
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error(`Cannot send analytics. Error: ${error.stack}`);
+      logError(`Cannot send analytics. Error: ${error.stack}`, logInstance);
     }
+  }
+}
+
+function logError(message: string, logInstance?: FastifyLoggerInstance): void {
+  if (logInstance) {
+    logInstance.error(message);
+  } else {
+    console.error(message);
   }
 }
