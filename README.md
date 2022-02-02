@@ -6,7 +6,7 @@ Contact oss@hntlabs.com with questions about the code - following are instructio
 
 ## Getting Started
 
-To run the development servers you will need to run two seperate dev instances, one to server the Client (via Next.JS) and the other to server the Server.
+To run the development servers you will need to run two seperate dev instances, one to serve the Client (via Next.js), and the other for the backend server.
 
 They will both need to be served with TLS to enable the code served to the client to make requests against the server. To support this you will need to install local-ssl-proxy and mkcert.
 
