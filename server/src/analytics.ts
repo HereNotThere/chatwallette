@@ -66,7 +66,7 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
       }
     } else {
       // No op
-      // To-do: remove this line after confirming that
+      // To-do: remove this print line after confirming that
       // analytics is working in production.
       logInfo(`Analytics not sent. No tracking ID`, logInstance);
       resolve();
@@ -77,6 +77,7 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
 }
 
 function loadEnv(): void {
+  // Load dev environment variables.
   if (process.env.NODE_ENV !== "production") {
     const envFile = findup(".env");
 
