@@ -1,8 +1,11 @@
-# Build arguments.
-ARG _ANALYTICS_ID=
-
 # Install dependencies only when needed
 FROM node:alpine AS deps
+
+# Build arguments.
+ARG _ANALYTICS_ID
+
+RUN echo Substituted value for ANALYTICS_ID=$_ANALYTICS_ID
+
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat build-base gcc wget git python3
 WORKDIR /app
