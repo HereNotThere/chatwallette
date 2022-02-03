@@ -25,36 +25,52 @@ export interface AnalyticsEvent {
 }
 
 export async function sendAnalytics(event: AnalyticsEvent, logInstance?: FastifyLoggerInstance): Promise<void> {
-  if (ANALYTICS_ID) {
-    const params = new URLSearchParams();
-    // Required.
-    params.append("v", "1");
-    params.append("t", "event");
-    params.append("tid", ANALYTICS_ID);
-    params.append("cid", event.clientId);
-    params.append("ec", event.category);
-    params.append("ea", event.action);
-    // Optional.
-    event.label && params.append("el", event.label);
-    if (event.value !== undefined) {
-      params.append("ev", event.value.toString());
-    }
+  const promise = new Promise<void>(resolve => {
+    if (ANALYTICS_ID) {
+      const params = new URLSearchParams();
+      // Required.
+      params.append("v", "1");
+      params.append("t", "event");
+      params.append("tid", ANALYTICS_ID);
+      params.append("cid", event.clientId);
+      params.append("ec", event.category);
+      params.append("ea", event.action);
+      // Optional.
+      event.label && params.append("el", event.label);
+      if (event.value !== undefined) {
+        params.append("ev", event.value.toString());
+      }
 
-    try {
-      const req = https.request(endpointConfig);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      req.on("error", (error: any) => {
-        logError(error.message, logInstance);
-      });
-      req.write(params.toString());
-      req.end();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      logError(`Cannot send analytics. Error: ${error.stack}`, logInstance);
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const req = https.request(endpointConfig, res => {
+          // Done.
+          resolve();
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        req.on("error", (error: any) => {
+          logError(error.message, logInstance);
+          // Ignore any exceptions
+          resolve();
+        });
+
+        req.write(params.toString());
+        req.end();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        logError(`Cannot send analytics. Error: ${error.stack}`, logInstance);
+        // Ignore any exceptions
+        resolve();
+      }
+    } else {
+      // No op
+      logInfo(`Analytics not sent. No tracking ID`, logInstance);
+      resolve();
     }
-  } else {
-    logInfo(`Analytics not sent. No tracking ID`, logInstance);
-  }
+  });
+
+  return promise;
 }
 
 function loadEnv(): void {
