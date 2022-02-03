@@ -15,7 +15,7 @@ export const IntroModule = () => {
           </HeaderLarge>
         </Box>
         <Box padding="xs">
-          <Paragraph centerText>Talk to NFT holders</Paragraph>
+          <Paragraph centerText>Talk to fellow NFT holders</Paragraph>
         </Box>
         <UserForm />
       </Stack>

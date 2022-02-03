@@ -39,6 +39,11 @@ const nextConfig = {
     );
 
     config.module.rules.push({
+      test: /\.(glsl|vs|fs|vert|frag)$/,
+      use: ["raw-loader", "glslify-loader"],
+    });
+
+    config.module.rules.push({
       test: /\.(wav)$/i,
       loader: "file-loader",
       options: {

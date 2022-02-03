@@ -33,13 +33,13 @@ import { deleteAuth } from "../utils/authRequest";
 import { arrayBufferToBase64 } from "../utils/base64";
 import { isBrave } from "../utils/brave";
 import { NoSSR } from "./_app";
-import { usePrevious } from "../hooks/use_previous";
 import ConnectedSound from "../assets/ir10.wav";
 import DisconnectedSound from "../assets/ir5.wav";
 import { abbrevWalletAddress } from "../components/User/DisplayName";
 import { logger } from "../utils/logger";
 import { NFTToken } from "../components/Tokens/NFTToken";
 import { Panel } from "../components/Panel";
+import { NoiseBackground } from "../components/NoiseBackground/NoiseBackground";
 
 const StyledExitIcon = styled(ExitIcon)`
   transform: translateY(3px);
@@ -491,10 +491,12 @@ const ChatPage: NextPage = () => {
                     })}`,
                   );
 
-                  // Brave prior to 1.35 doesn't support ecRecover so skipping signature verification for now
+                  // Brave prior to 1.35 doesn't support ecRecover so skipping signature verification on brave when
+                  // signingWalletAddress not present
                   if (
                     hash === hashFromMessage &&
-                    ((isBrave() && signingWalletAddress === undefined) || signingWalletAddress === otherWalletAddress)
+                    ((isBrave() && signingWalletAddress === undefined) ||
+                      signingWalletAddress?.toLowerCase() === otherWalletAddress.toLowerCase())
                   ) {
                     const tempKey = await deriveSecretKey(privateKey, otherPublicKey);
                     logger.info(`JoinChatEvent deriveSecretKey`);
@@ -503,7 +505,7 @@ const ChatPage: NextPage = () => {
                     setParticipants(signalingEvent.participants);
                     setOtherUser(otherScreenName);
                   } else {
-                    logger.info(
+                    logger.warn(
                       `JoinChatEvent hash doesn't match ${JSON.stringify({
                         hash,
                         hashFromMessage,
@@ -677,6 +679,7 @@ const ChatPage: NextPage = () => {
     <NoSSR>
       <>
         <Box fullscreen ref={boxRef}>
+          <NoiseBackground />
           <Stack row spaceBetween padding overflowVisible>
             <Terminal
               terminalLog={terminalLog}
@@ -686,14 +689,14 @@ const ChatPage: NextPage = () => {
             <Box>
               <Stack shrink>
                 <Stack shrink row>
-                  <Box className="body-text" border padding="xs" background="panel">
+                  <Box border padding="xs" background="panel">
                     ChainID: {chainName}
                   </Box>
                   <Stack row itemSpace="no">
-                    <Button className="body-text" border padding="xs" background="panel" onClick={onClickShowNft}>
+                    <Button border padding="xs" background="panel" onClick={onClickShowNft}>
                       {selfNFT.length} NFT{selfNFT.length === 1 ? "" : "s"}
                     </Button>
-                    <Box className="body-text" border padding="xs" background="input">
+                    <Box border padding="xs" background="input">
                       <SpanText bold>{abbrevWalletAddress(walletAddress)}</SpanText>
                     </Box>
                   </Stack>

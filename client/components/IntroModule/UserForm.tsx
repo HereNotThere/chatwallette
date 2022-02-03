@@ -113,11 +113,13 @@ export const UserForm = () => {
             <Stack row itemSpace="xs" shrink>
               <InputField
                 type="text"
+                name="chatwallettename"
                 value={screenName ?? ""}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 size={16}
                 autoFocus
+                autoComplete="off"
                 placeholder="Pick a username"
                 borderColor={error ? "NeonPurple" : "GrapePurple"}
               />

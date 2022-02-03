@@ -1,4 +1,4 @@
-ChatWallette is an experiment by Here Not There Labs - a team of web3 creators dropping projects as we go. Follow along at HNTLabs.com or reach out to hello@hntlabs.com
+ChatWallette is an experiment by Here Not There Labs - say hi hello@hntlabs.com.
 
 ChatWallette matches users based on their NFTs and sets them up for peer-to-peer conversations. If no matches are found based on the user's wallet, users can choose to randomly match with others online.
 
