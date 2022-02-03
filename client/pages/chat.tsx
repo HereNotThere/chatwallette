@@ -39,6 +39,7 @@ import { abbrevWalletAddress } from "../components/User/DisplayName";
 import { logger } from "../utils/logger";
 import { NFTToken } from "../components/Tokens/NFTToken";
 import { Panel } from "../components/Panel";
+import { NoiseBackground } from "../components/NoiseBackground/NoiseBackground";
 
 const StyledExitIcon = styled(ExitIcon)`
   transform: translateY(3px);
@@ -678,6 +679,7 @@ const ChatPage: NextPage = () => {
     <NoSSR>
       <>
         <Box fullscreen ref={boxRef}>
+          <NoiseBackground />
           <Stack row spaceBetween padding overflowVisible>
             <Terminal
               terminalLog={terminalLog}
@@ -687,14 +689,14 @@ const ChatPage: NextPage = () => {
             <Box>
               <Stack shrink>
                 <Stack shrink row>
-                  <Box className="body-text" border padding="xs" background="panel">
+                  <Box border padding="xs" background="panel">
                     ChainID: {chainName}
                   </Box>
                   <Stack row itemSpace="no">
-                    <Button className="body-text" border padding="xs" background="panel" onClick={onClickShowNft}>
+                    <Button border padding="xs" background="panel" onClick={onClickShowNft}>
                       {selfNFT.length} NFT{selfNFT.length === 1 ? "" : "s"}
                     </Button>
-                    <Box className="body-text" border padding="xs" background="input">
+                    <Box border padding="xs" background="input">
                       <SpanText bold>{abbrevWalletAddress(walletAddress)}</SpanText>
                     </Box>
                   </Stack>
