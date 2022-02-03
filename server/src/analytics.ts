@@ -26,6 +26,9 @@ export interface AnalyticsEvent {
 
 export async function sendAnalytics(log: FastifyLoggerInstance, event: AnalyticsEvent): Promise<void> {
   const request = new Promise<void>(resolve => {
+    log.info(
+      `const ANALYTICS_ID=${ANALYTICS_ID}, environment variable process.env.ANALYTICS_ID=${process.env.ANALYTICS_ID}`,
+    );
     if (ANALYTICS_ID) {
       const params = new URLSearchParams();
       // Required.
