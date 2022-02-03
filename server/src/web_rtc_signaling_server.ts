@@ -1,6 +1,4 @@
-import { FastifyLoggerInstance } from "fastify";
-import { randomUUID } from "crypto";
-
+import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 import {
   EnterPoolRequest,
   JoinChatEvent,
@@ -13,10 +11,12 @@ import {
   UpdateMatchCriteria,
   WebRTCNegotiationRequest,
 } from "../../protocol/signaling_types";
-import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 
-import { WalletConnectionStore } from "./wallet_connection_store";
 import { EventMessage } from "./sse/sse-plugin";
+import { FastifyLoggerInstance } from "fastify";
+import { WalletConnectionStore } from "./wallet_connection_store";
+import { randomUUID } from "crypto";
+import { sendAnalytics } from "./analytics";
 
 export class WebRTCSignalingServer {
   private connectionStore: WalletConnectionStore;
@@ -102,12 +102,28 @@ export class WebRTCSignalingServer {
   ): Promise<void> {
     await this.connectionStore.addConnection(log, walletAddress, connection);
     log.info(`addUserConnection walletAddress: ${walletAddress}}`);
+    await sendAnalytics(
+      {
+        clientId: walletAddress,
+        category: "Login",
+        action: "Connected",
+      },
+      log,
+    );
   }
 
   public async removeUserConnection(log: FastifyLoggerInstance, walletAddress: string) {
     log.info(`removeUserConnection connection walletAddress: ${walletAddress}`);
     await this.connectionStore.removeFromWaitingList(log, walletAddress);
     await this.connectionStore.deleteConnection(log, walletAddress);
+    await sendAnalytics(
+      {
+        clientId: walletAddress,
+        category: "Login",
+        action: "Disconnected",
+      },
+      log,
+    );
     return true;
   }
 
