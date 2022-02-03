@@ -1,6 +1,4 @@
-import { FastifyLoggerInstance } from "fastify";
-import { randomUUID } from "crypto";
-
+import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 import {
   EnterPoolRequest,
   JoinChatEvent,
@@ -13,10 +11,12 @@ import {
   UpdateMatchCriteria,
   WebRTCNegotiationRequest,
 } from "../../protocol/signaling_types";
-import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
+import { SERVER_ID, sendAnalytics } from "./analytics";
 
-import { WalletConnectionStore } from "./wallet_connection_store";
 import { EventMessage } from "./sse/sse-plugin";
+import { FastifyLoggerInstance } from "fastify";
+import { WalletConnectionStore } from "./wallet_connection_store";
+import { randomUUID } from "crypto";
 
 export class WebRTCSignalingServer {
   private connectionStore: WalletConnectionStore;
@@ -100,14 +100,29 @@ export class WebRTCSignalingServer {
     walletAddress: string,
     connection: Connection,
   ): Promise<void> {
-    await this.connectionStore.addConnection(log, walletAddress, connection);
     log.info(`addUserConnection walletAddress: ${walletAddress}}`);
+
+    await Promise.all([
+      this.connectionStore.addConnection(log, walletAddress, connection),
+      sendAnalytics(log, {
+        clientId: walletAddress,
+        category: "Login",
+        action: "Connected",
+      }),
+    ]);
   }
 
   public async removeUserConnection(log: FastifyLoggerInstance, walletAddress: string) {
     log.info(`removeUserConnection connection walletAddress: ${walletAddress}`);
-    await this.connectionStore.removeFromWaitingList(log, walletAddress);
-    await this.connectionStore.deleteConnection(log, walletAddress);
+    await Promise.all([
+      this.connectionStore.removeFromWaitingList(log, walletAddress),
+      this.connectionStore.deleteConnection(log, walletAddress),
+      sendAnalytics(log, {
+        clientId: walletAddress,
+        category: "Login",
+        action: "Disconnected",
+      }),
+    ]);
     return true;
   }
 
@@ -192,14 +207,20 @@ export class WebRTCSignalingServer {
         };
 
         await Promise.all([
-          await this.connectionStore.sendToWallet(log, callerWalletAddress, { data: JSON.stringify(joinChatEvent) }),
-          await this.connectionStore.sendToWallet(log, calleeWalletAddress, { data: JSON.stringify(joinChatEvent) }),
-
-          await this.connectionStore.sendToWallet(log, callerWalletAddress, {
+          this.connectionStore.sendToWallet(log, callerWalletAddress, { data: JSON.stringify(joinChatEvent) }),
+          this.connectionStore.sendToWallet(log, calleeWalletAddress, { data: JSON.stringify(joinChatEvent) }),
+          this.connectionStore.sendToWallet(log, callerWalletAddress, {
             data: JSON.stringify(callerCalleesData),
           }),
-          await this.connectionStore.sendToWallet(log, calleeWalletAddress, {
+          this.connectionStore.sendToWallet(log, calleeWalletAddress, {
             data: JSON.stringify(calleeCallersData),
+          }),
+          sendAnalytics(log, {
+            clientId: SERVER_ID,
+            category: "Find Match",
+            action: "Matched",
+            label: pair[2] === "nft" ? "NFT" : pair[2] === "random" ? "Random" : "Unknown",
+            value: matchedTokens.length,
           }),
         ]);
 

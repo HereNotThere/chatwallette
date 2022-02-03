@@ -1,3 +1,6 @@
+# Build arguments.
+ARG _ANALYTICS_ID=
+
 # Install dependencies only when needed
 FROM node:alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
@@ -41,6 +44,8 @@ ENV NODE_ENV production
 #   docker build . -t here-web3-server --build-arg REDISHOST_ARG=10.44.207.180
 ARG REDISHOST_ARG=10.120.147.28
 ARG REDISPORT_ARG=6379
+
+ENV ANALYTICS_ID=$_ANALYTICS_ID
 ENV REDISHOST=$REDISHOST_ARG
 ENV REDISPORT=$REDISPORT_ARG
 
