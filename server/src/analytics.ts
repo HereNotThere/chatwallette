@@ -29,6 +29,7 @@ export async function sendAnalytics(log: FastifyLoggerInstance, event: Analytics
     log.info(
       `const ANALYTICS_ID=${ANALYTICS_ID}, environment variable process.env.ANALYTICS_ID=${process.env.ANALYTICS_ID}`,
     );
+    log.info(`environment variables ${JSON.stringify(process.env)}}`);
     if (ANALYTICS_ID) {
       const params = new URLSearchParams();
       // Required.

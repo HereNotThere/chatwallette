@@ -52,7 +52,7 @@ ENV ANALYTICS_ID=$_ANALYTICS_ID
 ENV REDISHOST=$REDISHOST_ARG
 ENV REDISPORT=$REDISPORT_ARG
 
-RUN echo environment variable ANALYTICS_ID=${ANALYTICS_ID}
+RUN echo environment variable ANALYTICS_ID=$ANALYTICS_ID , build-arg _ANALYTICS_ID=$_ANALYTICS_ID
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
