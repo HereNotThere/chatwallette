@@ -10,6 +10,7 @@ import Tokens from "../Tokens/Tokens";
 import { Paragraph, SpanText } from "../Text/Text";
 import { Box } from "../Box";
 import { DisplayName } from "../User/DisplayName";
+import styled from "styled-components";
 
 type Props = {
   participants: string[];
@@ -117,7 +118,7 @@ export const ChatPanel = (props: Props) => {
   return (
     <Panel padding="xs" onClose={props.onClose} panelTitle={<ChatPanelTitle {...otherUser} />}>
       <Stack background="panel2" padding="sm" border>
-        <Box textColor="LightPurple" grow style={{ overflow: "scroll" }}>
+        <ScrollBox textColor="LightPurple" grow>
           <Paragraph>
             <SpanText textColor="LightPurple">You are now talking with </SpanText>
             <SpanText textColor="LightPurple" bold>
@@ -158,7 +159,7 @@ export const ChatPanel = (props: Props) => {
             </Paragraph>
           ))}
           <div ref={scrollEndRef} />
-        </Box>
+        </ScrollBox>
         <Stack row shrink itemSpace="xs" overflowVisible>
           <InputField
             padding="sm"
@@ -177,3 +178,10 @@ export const ChatPanel = (props: Props) => {
     </Panel>
   );
 };
+
+const ScrollBox = styled(Box)`
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
