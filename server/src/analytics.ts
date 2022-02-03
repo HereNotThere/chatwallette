@@ -24,8 +24,8 @@ export interface AnalyticsEvent {
   value?: number;
 }
 
-export async function sendAnalytics(event: AnalyticsEvent, logInstance?: FastifyLoggerInstance): Promise<void> {
-  const promise = new Promise<void>(resolve => {
+export async function sendAnalytics(log: FastifyLoggerInstance, event: AnalyticsEvent): Promise<void> {
+  const request = new Promise<void>(resolve => {
     if (ANALYTICS_ID) {
       const params = new URLSearchParams();
       // Required.
@@ -51,7 +51,7 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         req.on("error", (error: any) => {
-          logError(error.message, logInstance);
+          log.error(error.message);
           // Ignore any exceptions
           resolve();
         });
@@ -60,7 +60,7 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
         req.end();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        logError(`Cannot send analytics. Error: ${error.stack}`, logInstance);
+        log.error(`Cannot send analytics. Error: ${error.stack}`);
         // Ignore any exceptions
         resolve();
       }
@@ -68,12 +68,12 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
       // No op
       // To-do: remove this print line after confirming that
       // analytics is working in production.
-      logInfo(`Analytics not sent. No tracking ID`, logInstance);
+      log.info(`Analytics not sent. No tracking ID`);
       resolve();
     }
   });
 
-  return promise;
+  return request;
 }
 
 function loadEnv(): void {
@@ -84,21 +84,5 @@ function loadEnv(): void {
     if (envFile) {
       dotenv.config({ path: envFile });
     }
-  }
-}
-
-function logError(message: string, logInstance?: FastifyLoggerInstance): void {
-  if (logInstance) {
-    logInstance.error(message);
-  } else {
-    console.error(message);
-  }
-}
-
-function logInfo(message: string, logInstance?: FastifyLoggerInstance): void {
-  if (logInstance) {
-    logInstance.info(message);
-  } else {
-    console.info(message);
   }
 }
