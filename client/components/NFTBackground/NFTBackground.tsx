@@ -208,16 +208,21 @@ enum LogoStatus {
   Hidden = "Hidden",
 }
 
-const StyledLogo = styled(Box)<{
+type StyledLogoProps = {
   logoIndex: number;
   intensity: number;
   status: LogoStatus;
-}>`
+};
+
+const StyledLogo = styled(Box).attrs<StyledLogoProps>(({ logoIndex }) => ({
+  as: "img",
+  src: Logos[logoIndex],
+}))<StyledLogoProps>`
   width: ${CELL_SIZE}px;
   height: ${CELL_SIZE}px;
 
-  background: url(${({ logoIndex }) => Logos[logoIndex]}) no-repeat center;
-  background-size: 60px;
+  object-fit: contain;
+  padding: 5px;
 
   --faded: 0.2;
 
