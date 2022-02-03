@@ -11,12 +11,12 @@ import {
   UpdateMatchCriteria,
   WebRTCNegotiationRequest,
 } from "../../protocol/signaling_types";
+import { SERVER_ID, sendAnalytics } from "./analytics";
 
 import { EventMessage } from "./sse/sse-plugin";
 import { FastifyLoggerInstance } from "fastify";
 import { WalletConnectionStore } from "./wallet_connection_store";
 import { randomUUID } from "crypto";
-import { sendAnalytics } from "./analytics";
 
 export class WebRTCSignalingServer {
   private connectionStore: WalletConnectionStore;
@@ -223,6 +223,17 @@ export class WebRTCSignalingServer {
           `sent JoinChatEvent to: callerConnection: ${pair[0]}, calleeConnection: ${pair[1]}, event: ${JSON.stringify(
             joinChatEvent,
           )}`,
+        );
+
+        await sendAnalytics(
+          {
+            clientId: SERVER_ID,
+            category: "Find Match",
+            action: "Matched",
+            label: pair[2] === "nft" ? "NFT" : pair[2] === "random" ? "Random" : "Unknown",
+            value: matchedTokens.length,
+          },
+          log,
         );
       } else {
         log.warn(

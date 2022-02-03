@@ -1,5 +1,6 @@
 import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 
+import { AuthRequestWalletData } from "../../protocol/auth";
 import { ClientConnectionSignal } from "./client_connection_signal";
 import { EventEmitter } from "events";
 import { EventMessage } from "./sse/sse-plugin";
@@ -7,7 +8,6 @@ import { FastifyLoggerInstance } from "fastify";
 import IORedis from "ioredis";
 import { MatchCriteria } from "../../protocol/signaling_types";
 import { NFTResult } from "../../protocol/tokens";
-import { AuthRequestWalletData } from "../../protocol/auth";
 
 const REDISHOST = process.env.REDISHOST ?? "localhost";
 const REDISPORT = process.env.REDISPORT ?? "6379";
@@ -300,7 +300,7 @@ export class WalletConnectionStoreRedis extends EventEmitter implements WalletCo
                 removeFromQueue(pair2)
                 table.insert(result, pair1)
                 table.insert(result, pair2)
-                table.insert(result, "tokens")
+                table.insert(result, "nft")
                 return result
               end
             end
