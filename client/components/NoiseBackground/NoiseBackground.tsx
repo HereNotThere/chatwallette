@@ -10,6 +10,19 @@ const colors = [
   [0.996, 0.898, 0.401, 0.2],
 ];
 
+export interface Uniforms {
+  uIntensity: number;
+  uGlobalAlpha: number;
+  uPatternMix: number;
+  uNoiseIntensity: number;
+  uOffsetSpeed: number;
+  uViewport: number[];
+  uTime: number;
+  uDisplacement: number;
+  uColor: number;
+  uIndex: number;
+}
+
 const uniforms = {
   uIntensity: 0.06, //0.01,
   uGlobalAlpha: 0.3,
@@ -84,16 +97,16 @@ const useShader = (ref: RefObject<HTMLCanvasElement>) => {
       frag: fragmentShaderCode,
       vert: vertexShaderCode,
       uniforms: {
-        uIndex: regl.prop("uIndex"),
-        uViewport: regl.prop("uViewport"),
-        uTime: regl.prop("uTime"),
-        uDisplacement: regl.prop("uDisplacement"),
-        uColor: regl.prop("uColor"),
-        uIntensity: regl.prop("uIntensity"),
-        uGlobalAlpha: regl.prop("uGlobalAlpha"),
-        uPatternMix: regl.prop("uPatternMix"),
-        uNoiseIntensity: regl.prop("uNoiseIntensity"),
-        uOffsetSpeed: regl.prop("uOffsetSpeed"),
+        uIndex: regl.prop<Uniforms, "uIndex">("uIndex"),
+        uViewport: regl.prop<Uniforms, "uViewport">("uViewport"),
+        uTime: regl.prop<Uniforms, "uTime">("uTime"),
+        uDisplacement: regl.prop<Uniforms, "uDisplacement">("uDisplacement"),
+        uColor: regl.prop<Uniforms, "uColor">("uColor"),
+        uIntensity: regl.prop<Uniforms, "uIntensity">("uIntensity"),
+        uGlobalAlpha: regl.prop<Uniforms, "uGlobalAlpha">("uGlobalAlpha"),
+        uPatternMix: regl.prop<Uniforms, "uPatternMix">("uPatternMix"),
+        uNoiseIntensity: regl.prop<Uniforms, "uNoiseIntensity">("uNoiseIntensity"),
+        uOffsetSpeed: regl.prop<Uniforms, "uOffsetSpeed">("uOffsetSpeed"),
       },
       attributes: {
         // a big triangles
