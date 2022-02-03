@@ -183,8 +183,8 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{"Chat Wallette"}</title>
-        <meta property="og:title" content="Chat Wallette" />
+        <title>{"ChatWallette"}</title>
+        <meta property="og:title" content="ChatWallette" />
         <meta name="description" content="Talk to fellow NFT holders" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://chatwallette.xyz" />
