@@ -163,6 +163,8 @@ export const ChatPanel = (props: Props) => {
         <Stack row shrink itemSpace="xs" overflowVisible>
           <InputField
             padding="sm"
+            name="chatinput"
+            autoComplete="off"
             border
             grow
             value={inputValue}
