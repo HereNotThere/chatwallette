@@ -33,7 +33,6 @@ import { deleteAuth } from "../utils/authRequest";
 import { arrayBufferToBase64 } from "../utils/base64";
 import { isBrave } from "../utils/brave";
 import { NoSSR } from "./_app";
-import { usePrevious } from "../hooks/use_previous";
 import ConnectedSound from "../assets/ir10.wav";
 import DisconnectedSound from "../assets/ir5.wav";
 import { abbrevWalletAddress } from "../components/User/DisplayName";
@@ -491,10 +490,12 @@ const ChatPage: NextPage = () => {
                     })}`,
                   );
 
-                  // Brave prior to 1.35 doesn't support ecRecover so skipping signature verification for now
+                  // Brave prior to 1.35 doesn't support ecRecover so skipping signature verification on brave when
+                  // signingWalletAddress not present
                   if (
                     hash === hashFromMessage &&
-                    ((isBrave() && signingWalletAddress === undefined) || signingWalletAddress === otherWalletAddress)
+                    ((isBrave() && signingWalletAddress === undefined) ||
+                      signingWalletAddress?.toLowerCase() === otherWalletAddress.toLowerCase())
                   ) {
                     const tempKey = await deriveSecretKey(privateKey, otherPublicKey);
                     logger.info(`JoinChatEvent deriveSecretKey`);
@@ -503,7 +504,7 @@ const ChatPage: NextPage = () => {
                     setParticipants(signalingEvent.participants);
                     setOtherUser(otherScreenName);
                   } else {
-                    logger.info(
+                    logger.warn(
                       `JoinChatEvent hash doesn't match ${JSON.stringify({
                         hash,
                         hashFromMessage,
