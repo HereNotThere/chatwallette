@@ -2,7 +2,7 @@
 FROM node:alpine AS deps
 
 # Build arguments.
-ARG _ANALYTICS_ID=
+ARG _ANALYTICS_ID
 
 RUN echo Substituted value for ANALYTICS_ID=$_ANALYTICS_ID
 
