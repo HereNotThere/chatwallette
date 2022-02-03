@@ -45,6 +45,7 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const req = https.request(endpointConfig, res => {
           // Done.
+          res.read();
           resolve();
         });
 
@@ -65,6 +66,8 @@ export async function sendAnalytics(event: AnalyticsEvent, logInstance?: Fastify
       }
     } else {
       // No op
+      // To-do: remove this line after confirming that
+      // analytics is working in production.
       logInfo(`Analytics not sent. No tracking ID`, logInstance);
       resolve();
     }
