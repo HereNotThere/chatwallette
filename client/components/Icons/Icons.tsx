@@ -34,136 +34,6 @@ export const CloseIcon = () => (
   </svg>
 );
 
-export const Coin1 = () => (
-  <svg width="45" height="45" viewBox="0 0 45 44" fill="none">
-    <g fill="currentColor">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M16.5 3.8147e-06H12.5V4H8.5V8H4.5L4.5 12H0.5V16V20V24V28V32H4.5L4.5 36H8.5V40H12.5V44H16.5H20.5H24.5H28.5H32.5V40H36.5V36H40.5V32H44.5V28V24V20V16V12H40.5V8H36.5V4L32.5 4V3.8147e-06H28.5H24.5H20.5H16.5ZM32.5 4V8H36.5V12H40.5V16V20V24V28V32H36.5V36H32.5V40H28.5H24.5H20.5H16.5H12.5V36H8.5V32H4.5L4.5 28L4.5 24L4.5 20V16V12H8.5V8H12.5V4L16.5 4H20.5H24.5H28.5L32.5 4Z"
-      />
-      <rect x="16.5" y="25" width="4" height="4" transform="rotate(90 16.5 25)" />
-      <rect x="20.5" y="29" width="4" height="4" transform="rotate(90 20.5 29)" />
-      <rect x="24.5" y="29" width="4" height="4" transform="rotate(90 24.5 29)" />
-      <rect x="24.5" y="33" width="4" height="4" transform="rotate(90 24.5 33)" />
-      <rect x="28.5" y="29" width="4" height="4" transform="rotate(90 28.5 29)" />
-      <rect x="32.5" y="25" width="4" height="4" transform="rotate(90 32.5 25)" />
-      <rect x="24.5" y="22" width="4" height="4" transform="rotate(90 24.5 22)" />
-      <rect x="20.5" y="18" width="4" height="4" transform="rotate(90 20.5 18)" />
-      <rect x="24.5" y="18" width="4" height="4" transform="rotate(90 24.5 18)" />
-      <rect x="28.5" y="18" width="4" height="4" transform="rotate(90 28.5 18)" />
-      <rect x="16.5" y="14" width="4" height="4" transform="rotate(90 16.5 14)" />
-      <rect x="20.5" y="14" width="4" height="4" transform="rotate(90 20.5 14)" />
-      <rect x="24.5" y="14" width="4" height="4" transform="rotate(90 24.5 14)" />
-      <rect x="28.5" y="14" width="4" height="4" transform="rotate(90 28.5 14)" />
-      <rect x="32.5" y="14" width="4" height="4" transform="rotate(90 32.5 14)" />
-      <rect x="20.5" y="10" width="4" height="4" transform="rotate(90 20.5 10)" />
-      <rect x="24.5" y="10" width="4" height="4" transform="rotate(90 24.5 10)" />
-      <rect x="28.5" y="10" width="4" height="4" transform="rotate(90 28.5 10)" />
-      <rect x="24.5" y="6" width="4" height="4" transform="rotate(90 24.5 6)" />
-    </g>
-  </svg>
-);
-
-export const Coin2 = () => (
-  <svg width="45" height="45" viewBox="0 0 45 44" fill="none">
-    <g fill="currentColor">
-      <rect x="16.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 16.5 3.8147e-06)" />
-      <rect x="12.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 12.5 3.8147e-06)" />
-      <rect x="36.5" y="40" width="4" height="28" transform="rotate(90 36.5 40)" />
-      <rect x="8.5" y="36" width="4" height="4" transform="rotate(90 8.5 36)" />
-      <rect x="40.5" y="4" width="4" height="4" transform="rotate(90 40.5 4)" />
-      <rect x="8.5" y="4" width="4" height="4" transform="rotate(90 8.5 4)" />
-      <rect x="40.5" y="36" width="4" height="4" transform="rotate(90 40.5 36)" />
-      <rect x="4.5" y="8" width="28" height="4" transform="rotate(90 4.5 8)" />
-      <rect x="44.5" y="8" width="28" height="4" transform="rotate(90 44.5 8)" />
-      <rect x="20.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 20.5 3.8147e-06)" />
-      <rect x="24.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 24.5 3.8147e-06)" />
-      <rect x="28.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 28.5 3.8147e-06)" />
-      <rect x="32.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 32.5 3.8147e-06)" />
-      <rect x="36.5" y="3.8147e-06" width="4" height="4" transform="rotate(90 36.5 3.8147e-06)" />
-      <rect x="18.5" y="13" width="4" height="4" transform="rotate(90 18.5 13)" />
-      <rect x="30.5" y="13" width="4" height="4" transform="rotate(90 30.5 13)" />
-      <rect x="14.5" y="24" width="4" height="4" transform="rotate(90 14.5 24)" />
-      <rect x="24.5" y="20" width="8" height="4" transform="rotate(90 24.5 20)" />
-      <rect x="20.5" y="20" width="4" height="4" transform="rotate(90 20.5 20)" />
-      <rect x="28.5" y="20" width="4" height="4" transform="rotate(90 28.5 20)" />
-      <rect x="34.5" y="24" width="4" height="4" transform="rotate(90 34.5 24)" />
-      <rect x="30.5" y="28" width="4" height="16" transform="rotate(90 30.5 28)" />
-    </g>
-  </svg>
-);
-
-export const Coin3 = () => (
-  <svg width="45" height="45" viewBox="0 0 45 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g fill="currentColor">
-      <rect x="40.5" width="4" height="36" transform="rotate(90 40.5 0)" />
-      <rect x="44.5" y="4" width="36" height="4" transform="rotate(90 44.5 4)" />
-      <rect x="40.5" y="40" width="4" height="36" transform="rotate(90 40.5 40)" />
-      <rect x="4.5" y="4" width="35" height="4" transform="rotate(90 4.5 4)" />
-      <rect x="17.5" y="10" width="28" height="4" transform="rotate(90 17.5 10)" />
-      <rect x="21.5" y="6" width="32" height="4" transform="rotate(90 21.5 6)" />
-      <rect x="25.5" y="6" width="27" height="4" transform="rotate(90 25.5 6)" />
-      <rect x="29.5" y="10" width="20" height="4" transform="rotate(90 29.5 10)" />
-      <rect x="33.5" y="13" width="14" height="4" transform="rotate(90 33.5 13)" />
-      <rect x="15.5" y="18" width="6" height="4" transform="rotate(90 15.5 18)" />
-    </g>
-    <g fill="var(--bg)">
-      <rect x="21.5" y="16" width="4" height="4" transform="rotate(90 21.5 16)" fill="black" />
-      <rect x="29.5" y="16" width="4" height="4" transform="rotate(90 29.5 16)" fill="black" />
-    </g>
-  </svg>
-);
-
-export const Coin4 = () => (
-  <svg width="45" height="45" viewBox="0 0 45 44">
-    <g fill="currentColor">
-      <rect x="16.5" width="4" height="4" transform="rotate(90 16.5 0)" />
-      <rect x="16.5" y="40" width="4" height="4" transform="rotate(90 16.5 40)" />
-      <rect x="12.5" y="4" width="4" height="4" transform="rotate(90 12.5 4)" />
-      <rect x="8.5" y="8" width="4" height="4" transform="rotate(90 8.5 8)" />
-      <rect x="12.5" y="36" width="4" height="4" transform="rotate(90 12.5 36)" />
-      <rect x="8.5" y="32" width="4" height="4" transform="rotate(90 8.5 32)" />
-      <rect x="36.5" y="4" width="4" height="4" transform="rotate(90 36.5 4)" />
-      <rect x="40.5" y="8" width="4" height="4" transform="rotate(90 40.5 8)" />
-      <rect x="36.5" y="36" width="4" height="4" transform="rotate(90 36.5 36)" />
-      <rect x="40.5" y="32" width="4" height="4" transform="rotate(90 40.5 32)" />
-      <rect x="4.5" y="12" width="4" height="4" transform="rotate(90 4.5 12)" />
-      <rect x="4.5" y="16" width="4" height="4" transform="rotate(90 4.5 16)" />
-      <rect x="4.5" y="24" width="4" height="4" transform="rotate(90 4.5 24)" />
-      <rect x="4.5" y="28" width="4" height="4" transform="rotate(90 4.5 28)" />
-      <rect x="4.5" y="20" width="4" height="4" transform="rotate(90 4.5 20)" />
-      <rect x="44.5" y="12" width="4" height="4" transform="rotate(90 44.5 12)" />
-      <rect x="44.5" y="16" width="4" height="4" transform="rotate(90 44.5 16)" />
-      <rect x="44.5" y="20" width="4" height="4" transform="rotate(90 44.5 20)" />
-      <rect x="44.5" y="24" width="4" height="4" transform="rotate(90 44.5 24)" />
-      <rect x="44.5" y="28" width="4" height="4" transform="rotate(90 44.5 28)" />
-      <rect x="20.5" width="4" height="4" transform="rotate(90 20.5 0)" />
-      <rect x="20.5" y="40" width="4" height="4" transform="rotate(90 20.5 40)" />
-      <rect x="24.5" width="4" height="4" transform="rotate(90 24.5 0)" />
-      <rect x="24.5" y="40" width="4" height="4" transform="rotate(90 24.5 40)" />
-      <rect x="28.5" width="4" height="4" transform="rotate(90 28.5 0)" />
-      <rect x="28.5" y="40" width="4" height="4" transform="rotate(90 28.5 40)" />
-      <rect x="32.5" width="4" height="4" transform="rotate(90 32.5 0)" />
-      <rect x="32.5" y="40" width="4" height="4" transform="rotate(90 32.5 40)" />
-      <rect x="16.5" y="12" width="4" height="4" transform="rotate(90 16.5 12)" />
-      <rect x="24.5" y="12" width="4" height="4" transform="rotate(90 24.5 12)" />
-      <rect x="28.5" y="12" width="4" height="4" transform="rotate(90 28.5 12)" />
-      <rect x="32.5" y="16" width="4" height="4" transform="rotate(90 32.5 16)" />
-      <rect x="28.5" y="20" width="4" height="4" transform="rotate(90 28.5 20)" />
-      <rect x="24.5" y="20" width="4" height="4" transform="rotate(90 24.5 20)" />
-      <rect x="32.5" y="24" width="4" height="4" transform="rotate(90 32.5 24)" />
-      <rect x="28.5" y="32" width="4" height="4" transform="rotate(90 28.5 32)" />
-      <rect x="24.5" y="28" width="4" height="4" transform="rotate(90 24.5 28)" />
-      <rect x="28.5" y="28" width="4" height="4" transform="rotate(90 28.5 28)" />
-      <rect x="20.5" y="8" width="4" height="4" transform="rotate(90 20.5 8)" />
-      <rect x="28.5" y="8" width="4" height="4" transform="rotate(90 28.5 8)" />
-      <rect x="16.5" y="28" width="4" height="4" transform="rotate(90 16.5 28)" />
-      <rect x="20.5" y="12" width="24" height="4" transform="rotate(90 20.5 12)" />
-    </g>
-  </svg>
-);
-
 export const EmailIcon = () => (
   <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
@@ -195,20 +65,22 @@ export const ExitIcon = (props: { className?: string }) => (
 
 export const InfoIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="20" y="8" width="2" height="8" fill="#CF47FF" />
-    <rect x="2" y="8" width="2" height="8" fill="#CF47FF" />
-    <rect x="11" y="11" width="2" height="6" fill="#CF47FF" />
-    <rect x="8" y="20" width="8" height="2" fill="#CF47FF" />
-    <rect x="8" y="2" width="8" height="2" fill="#CF47FF" />
-    <rect x="4" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="4" width="2" height="2" fill="#CF47FF" />
-    <rect x="11" y="7" width="2" height="2" fill="#CF47FF" />
-    <rect x="4" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="6" y="18" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="18" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="16" width="2" height="2" fill="#CF47FF" />
-    <rect x="18" y="6" width="2" height="2" fill="#CF47FF" />
-    <rect x="16" y="4" width="2" height="2" fill="#CF47FF" />
+    <g fill="#CF47FF">
+      <rect x="20" y="8" width="2" height="8" />
+      <rect x="2" y="8" width="2" height="8" />
+      <rect x="11" y="11" width="2" height="6" />
+      <rect x="8" y="20" width="8" height="2" />
+      <rect x="8" y="2" width="8" height="2" />
+      <rect x="4" y="6" width="2" height="2" />
+      <rect x="6" y="4" width="2" height="2" />
+      <rect x="11" y="7" width="2" height="2" />
+      <rect x="4" y="16" width="2" height="2" />
+      <rect x="6" y="18" width="2" height="2" />
+      <rect x="16" y="18" width="2" height="2" />
+      <rect x="18" y="16" width="2" height="2" />
+      <rect x="18" y="6" width="2" height="2" />
+      <rect x="16" y="4" width="2" height="2" />
+    </g>
   </svg>
 );
 
@@ -388,10 +260,6 @@ export const Icons = {
   ArrowIcon,
   BackIcon,
   CloseIcon,
-  Coin1,
-  Coin2,
-  Coin3,
-  Coin4,
   EmailIcon,
   ExitIcon,
   InfoIcon,
