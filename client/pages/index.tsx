@@ -226,14 +226,6 @@ const Home: NextPage = () => {
               <Button name={"Github"} icon={<GithubIcon />} background={"body"} textColor="NeonPurple" />
             </a>
           </Link>
-          {/* <Link
-            href={"https://herenottherelabs.notion.site/ChatWallette-About-Us-d6da63ef1a65415a8be2566915c48f96"}
-            passHref={true}
-          >
-            <a aria-label="Go read more about this Chatwallette.xyz here" target="_blank" rel="noreferrer noopener">
-              <Button name={"Info"} icon={<InfoIcon />} background={"body"} textColor="NeonPurple" />
-            </a>
-          </Link> */}
           <Link href={"https://twitter.com/hntlabs"} passHref={true}>
             <a aria-label="Follow Chatwallette.xyz on Twitter" target="_blank" rel="noreferrer noopener">
               <Button name={"Twitter"} icon={<TwitterIcon />} background={"body"} textColor="NeonPurple"></Button>
