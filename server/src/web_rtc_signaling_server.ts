@@ -1,4 +1,11 @@
-import { AnalyticsEvent, FindMatchAnalytics, SERVER_ID, WaitingPoolAnalytics, sendAnalytics } from "./analytics";
+import {
+  AnalyticsEvent,
+  FindMatchAnalytics,
+  SERVER_ID,
+  WaitingPoolAnalytics,
+  sendAnalytics,
+  sendBatchAnalytics,
+} from "./analytics";
 import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 import {
   EnterPoolRequest,
@@ -241,13 +248,7 @@ export class WebRTCSignalingServer {
           this.connectionStore.sendToWallet(log, calleeWalletAddress, {
             data: JSON.stringify(calleeCallersData),
           }),
-          sendAnalytics(log, {
-            clientId: SERVER_ID,
-            category: "Find Match",
-            action: "Matched",
-            label: pair[2] === "nft" ? "NFT" : pair[2] === "random" ? "Random" : "Unknown",
-            value: matchedTokens.length,
-          }),
+          sendBatchAnalytics(log, events),
         ]);
 
         log.info(
