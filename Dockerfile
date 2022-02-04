@@ -1,11 +1,6 @@
 # Install dependencies only when needed
 FROM node:alpine AS deps
 
-# Build arguments.
-ARG _ANALYTICS_ID
-
-RUN echo Substituted value for ANALYTICS_ID=$_ANALYTICS_ID
-
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat build-base gcc wget git python3
 WORKDIR /app
@@ -47,12 +42,14 @@ ENV NODE_ENV production
 #   docker build . -t here-web3-server --build-arg REDISHOST_ARG=10.44.207.180
 ARG REDISHOST_ARG=10.120.147.28
 ARG REDISPORT_ARG=6379
+# Build arguments.
+ARG _ANALYTICS_ID=
 
 ENV ANALYTICS_ID=$_ANALYTICS_ID
 ENV REDISHOST=$REDISHOST_ARG
 ENV REDISPORT=$REDISPORT_ARG
 
-RUN echo environment variable ANALYTICS_ID=$ANALYTICS_ID , build-arg _ANALYTICS_ID=$_ANALYTICS_ID
+RUN echo Substituted value for ANALYTICS_ID=${ANALYTICS_ID}
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
