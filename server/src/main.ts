@@ -162,7 +162,7 @@ async function fetchAllWalletAssets(
  */
 async function getSecretByName(keyName: string) {
   try {
-    const project = "projects/792563773988";
+    const project = `projects/${process.env.GCP_PROJECT_ID}`;
     const secretName = `${project}/secrets/${keyName}`;
     const secretClient = new SecretManagerServiceClient();
 
