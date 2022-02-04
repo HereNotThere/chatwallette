@@ -11,7 +11,7 @@ import {
   UpdateMatchCriteria,
   WebRTCNegotiationRequest,
 } from "../../protocol/signaling_types";
-import { SERVER_ID, sendAnalytics } from "./analytics";
+import { SERVER_ID, sendAnalytics, AnalyticsEvent, WaitingPoolAnalytics } from "./analytics";
 
 import { EventMessage } from "./sse/sse-plugin";
 import { FastifyLoggerInstance } from "fastify";
@@ -71,7 +71,12 @@ export class WebRTCSignalingServer {
     await this.connectionStore.updateMatchCriteria(log, walletAddress, matchCriteria);
     await this.connectionStore.enqueueToWaitingList(log, walletAddress);
 
-    const waitingList = await this.connectionStore.getWaitingList();
+    const joinPoolEvent: AnalyticsEvent = {
+      clientId: walletAddress,
+      category: WaitingPoolAnalytics.Category,
+      action: WaitingPoolAnalytics.JoinAction,
+    };
+    const [waitingList] = await Promise.all([this.connectionStore.getWaitingList(), sendAnalytics(log, joinPoolEvent)]);
     log.info(`enterPool ${JSON.stringify({ walletAddress, waitingList, request })}`);
   }
 
