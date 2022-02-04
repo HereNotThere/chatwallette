@@ -13,7 +13,7 @@ const StyledButton = styled(Box).attrs((props: ButtonProps) => ({
   centerContent: true,
   padding: props.padding ?? "xs",
   horizontalPadding: props.horizontalPadding ?? props.padding ?? "xs",
-  border: props.border ?? "backdrop",
+  border: props.border ?? false,
   background: props.background ?? "button",
   textColor: props.textColor ?? "white",
   aspect: props.square ? 1 : props.aspect,

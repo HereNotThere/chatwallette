@@ -63,6 +63,17 @@ export const ExitIcon = (props: { className?: string }) => (
   </svg>
 );
 
+export const FeedbackIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M13.3333 1.3335H2.66659V2.66683H1.33325V10.6668H2.66659V12.0002H10.6666V13.3335H11.9999V14.6668H13.3333V13.3335H14.6666V12.0002V10.6668V2.66683H13.3333V1.3335ZM13.3333 12.0002V10.6668V2.66683H2.66659V10.6668H10.6666V12.0002H11.9999V13.3335H13.3333V12.0002Z"
+      fill="currentColor"
+    />
+  </svg>
+);
+
 export const InfoIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g fill="#CF47FF">
@@ -262,6 +273,7 @@ export const Icons = {
   CloseIcon,
   EmailIcon,
   ExitIcon,
+  FeedbackIcon,
   InfoIcon,
   QuestionIcon,
   TwitterIcon,

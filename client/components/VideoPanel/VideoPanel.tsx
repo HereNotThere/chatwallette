@@ -149,7 +149,7 @@ export const VideoPanel = (props: Props) => {
           )}
         </Stack> */}
         <Stack row justifyContent="end" shrink padding>
-          <Button icon={isMicrophoneOn ? <MicIcon /> : <MicOffIcon />} onClick={toggleMicrophone} />
+          <Button border="backdrop" icon={isMicrophoneOn ? <MicIcon /> : <MicOffIcon />} onClick={toggleMicrophone} />
         </Stack>
       </MainContainer>
     </Panel>

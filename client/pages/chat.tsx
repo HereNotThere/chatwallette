@@ -15,7 +15,7 @@ import { Box } from "../components/Box";
 import { Button } from "../components/Button";
 import { ChatPanel } from "../components/ChatPanel/ChatPanel";
 import { Draggable } from "../components/Draggable/Draggable";
-import { ExitIcon } from "../components/Icons";
+import { ExitIcon, FeedbackIcon } from "../components/Icons";
 import { Stack } from "../components/Stack";
 import { TerminalLog } from "../components/Terminal/hooks/useTerminal";
 import { RandomPrompt } from "../components/Terminal/RandomPrompt";
@@ -727,6 +727,14 @@ const ChatPage: NextPage = () => {
               </Stack>
             </Box>
           </Stack>
+          {/* footer */}
+          <Stack row shrink justifyContent="end">
+            <Stack row shrink padding="sm">
+              <Box>
+                <SubmitFeedback />
+              </Box>
+            </Stack>
+          </Stack>
         </Box>
         <Box grow centerContent>
           {hasParticipants && (
@@ -775,6 +783,17 @@ const ChatPage: NextPage = () => {
         </Box>
       </>
     </NoSSR>
+  );
+};
+
+const SubmitFeedback = () => {
+  const onFeedbackClick = useCallback(() => {
+    window.open("mailto:hello@hntlabs.com?subject=ChatWallette");
+  }, []);
+  return (
+    <Button icon={<FeedbackIcon />} background="body" padding="no" onClick={onFeedbackClick} title="Submit Feedback">
+      Submit Feedback
+    </Button>
   );
 };
 
