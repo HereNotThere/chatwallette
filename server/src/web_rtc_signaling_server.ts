@@ -1,3 +1,4 @@
+import { AnalyticsEvent, FindMatchAnalytics, SERVER_ID, WaitingPoolAnalytics, sendAnalytics } from "./analytics";
 import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 import {
   EnterPoolRequest,
@@ -11,7 +12,6 @@ import {
   UpdateMatchCriteria,
   WebRTCNegotiationRequest,
 } from "../../protocol/signaling_types";
-import { SERVER_ID, sendAnalytics, AnalyticsEvent, WaitingPoolAnalytics } from "./analytics";
 
 import { EventMessage } from "./sse/sse-plugin";
 import { FastifyLoggerInstance } from "fastify";
@@ -212,6 +212,25 @@ export class WebRTCSignalingServer {
           allERC20: calleeWalletData.allERC20 ?? [],
           matchedNFTs: matchedTokens ?? [],
         };
+
+        const events: AnalyticsEvent[] = [];
+        events.push({
+          clientId: SERVER_ID,
+          category: FindMatchAnalytics.Category,
+          action: FindMatchAnalytics.MatchedAction,
+          label: pair[2] === "nft" ? "NFT" : pair[2] === "random" ? "Random" : "Unknown",
+          value: matchedTokens.length,
+        });
+        events.push({
+          clientId: callerWalletAddress,
+          category: WaitingPoolAnalytics.Category,
+          action: WaitingPoolAnalytics.MatchedAction,
+        });
+        events.push({
+          clientId: calleeWalletAddress,
+          category: WaitingPoolAnalytics.Category,
+          action: WaitingPoolAnalytics.MatchedAction,
+        });
 
         await Promise.all([
           this.connectionStore.sendToWallet(log, callerWalletAddress, { data: JSON.stringify(joinChatEvent) }),

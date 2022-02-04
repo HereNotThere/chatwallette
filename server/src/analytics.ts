@@ -16,12 +16,6 @@ const endpointConfig = {
 loadEnv();
 const ANALYTICS_ID = process.env.ANALYTICS_ID;
 
-export class WaitingPoolAnalytics {
-  static Category = "Waiting Pool";
-  static JoinAction = "Join";
-  static MatchedAction = "Matched";
-}
-
 export interface AnalyticsEvent {
   clientId: string;
   category: string;
@@ -89,3 +83,14 @@ function loadEnv(): void {
     }
   }
 }
+
+export const FindMatchAnalytics = {
+  Category: "Find Match" as const,
+  MatchedAction: "Matched" as const,
+};
+
+export const WaitingPoolAnalytics = {
+  Category: "Waiting Pool" as const,
+  JoinAction: "Join" as const,
+  MatchedAction: "Matched" as const,
+};
