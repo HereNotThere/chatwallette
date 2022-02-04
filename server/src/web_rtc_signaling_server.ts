@@ -1,3 +1,11 @@
+import {
+  AnalyticsEvent,
+  FindMatchAnalytics,
+  SERVER_ID,
+  WaitingPoolAnalytics,
+  sendAnalytics,
+  sendBatchAnalytics,
+} from "./analytics";
 import { Connection, UserAuthData, WalletData } from "./wallet_connection_types";
 import {
   EnterPoolRequest,
@@ -11,7 +19,6 @@ import {
   UpdateMatchCriteria,
   WebRTCNegotiationRequest,
 } from "../../protocol/signaling_types";
-import { SERVER_ID, sendAnalytics } from "./analytics";
 
 import { EventMessage } from "./sse/sse-plugin";
 import { FastifyLoggerInstance } from "fastify";
@@ -71,7 +78,14 @@ export class WebRTCSignalingServer {
     await this.connectionStore.updateMatchCriteria(log, walletAddress, matchCriteria);
     await this.connectionStore.enqueueToWaitingList(log, walletAddress);
 
-    const waitingList = await this.connectionStore.getWaitingList();
+    const [waitingList] = await Promise.all([
+      this.connectionStore.getWaitingList(),
+      sendAnalytics(log, {
+        clientId: walletAddress,
+        category: WaitingPoolAnalytics.Category,
+        action: WaitingPoolAnalytics.JoinAction,
+      }),
+    ]);
     log.info(`enterPool ${JSON.stringify({ walletAddress, waitingList, request })}`);
   }
 
@@ -206,6 +220,25 @@ export class WebRTCSignalingServer {
           matchedNFTs: matchedTokens ?? [],
         };
 
+        const events: AnalyticsEvent[] = [];
+        events.push({
+          clientId: SERVER_ID,
+          category: FindMatchAnalytics.Category,
+          action: FindMatchAnalytics.MatchedAction,
+          label: pair[2] === "nft" ? "NFT" : pair[2] === "random" ? "Random" : "Unknown",
+          value: matchedTokens.length,
+        });
+        events.push({
+          clientId: callerWalletAddress,
+          category: WaitingPoolAnalytics.Category,
+          action: WaitingPoolAnalytics.MatchedAction,
+        });
+        events.push({
+          clientId: calleeWalletAddress,
+          category: WaitingPoolAnalytics.Category,
+          action: WaitingPoolAnalytics.MatchedAction,
+        });
+
         await Promise.all([
           this.connectionStore.sendToWallet(log, callerWalletAddress, { data: JSON.stringify(joinChatEvent) }),
           this.connectionStore.sendToWallet(log, calleeWalletAddress, { data: JSON.stringify(joinChatEvent) }),
@@ -215,13 +248,7 @@ export class WebRTCSignalingServer {
           this.connectionStore.sendToWallet(log, calleeWalletAddress, {
             data: JSON.stringify(calleeCallersData),
           }),
-          sendAnalytics(log, {
-            clientId: SERVER_ID,
-            category: "Find Match",
-            action: "Matched",
-            label: pair[2] === "nft" ? "NFT" : pair[2] === "random" ? "Random" : "Unknown",
-            value: matchedTokens.length,
-          }),
+          sendBatchAnalytics(log, events),
         ]);
 
         log.info(
