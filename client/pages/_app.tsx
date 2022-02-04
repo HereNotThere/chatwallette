@@ -7,9 +7,8 @@ import { Panel } from "../components/Panel";
 import { Web3Provider } from "../hooks/use_web3";
 import { useStore } from "../store/store";
 import "../styles/fonts.css";
-import "../styles/globals.css";
-import "../styles/layout.scss";
-import "../styles/Typist.css";
+import "../styles/styles.scss";
+
 import { pageview } from "../utils/google_analytics";
 
 // Surpress all SSR rendering, force all rendering onto the client

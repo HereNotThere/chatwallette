@@ -1,3 +1,22 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: Pixel, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
+    Droid Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 /* TODO : move to global styled-component */
 $baseline: 8px;
 
@@ -109,8 +128,7 @@ h4 {
 }
 
 :root,
-p,
-.body-text {
+p {
   font-size: 13px;
   line-height: 2;
   margin: 0;
