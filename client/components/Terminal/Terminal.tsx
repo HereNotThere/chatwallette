@@ -90,7 +90,7 @@ export const Terminal = (props: Props) => {
 
   return (
     <>
-      <Box textColor="LightPurple" className="body-text">
+      <Box textColor="LightPurple">
         {terminalElement}
         {typingDone && showLookingForMatch && <LookingForMatch matchTokens={props.matchTokens} />}
       </Box>
