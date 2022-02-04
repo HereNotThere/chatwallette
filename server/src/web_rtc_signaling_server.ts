@@ -71,12 +71,14 @@ export class WebRTCSignalingServer {
     await this.connectionStore.updateMatchCriteria(log, walletAddress, matchCriteria);
     await this.connectionStore.enqueueToWaitingList(log, walletAddress);
 
-    const joinPoolEvent: AnalyticsEvent = {
-      clientId: walletAddress,
-      category: WaitingPoolAnalytics.Category,
-      action: WaitingPoolAnalytics.JoinAction,
-    };
-    const [waitingList] = await Promise.all([this.connectionStore.getWaitingList(), sendAnalytics(log, joinPoolEvent)]);
+    const [waitingList] = await Promise.all([
+      this.connectionStore.getWaitingList(),
+      sendAnalytics(log, {
+        clientId: walletAddress,
+        category: WaitingPoolAnalytics.Category,
+        action: WaitingPoolAnalytics.JoinAction,
+      }),
+    ]);
     log.info(`enterPool ${JSON.stringify({ walletAddress, waitingList, request })}`);
   }
 
