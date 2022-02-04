@@ -7,7 +7,7 @@ import UserForm from "./UserForm";
 export const IntroModule = () => {
   return (
     <Stack centerContent alignItems="center" justifyContent="center">
-      <Stack shrink alignItems="center" basis={220} itemSpace="sm">
+      <Stack shrink alignItems="center" itemSpace="sm">
         <Box>
           <HeaderLarge>
             <SpanText textColor="Turqoise">chat</SpanText>
