@@ -11,16 +11,21 @@ import {
   SignalingRequestType,
 } from "../../protocol/signaling_types";
 import { ERC20Result, NFTResult } from "../../protocol/tokens";
+import ConnectedSound from "../assets/ir10.wav";
+import DisconnectedSound from "../assets/ir5.wav";
 import { Box } from "../components/Box";
 import { Button } from "../components/Button";
 import { ChatPanel } from "../components/ChatPanel/ChatPanel";
 import { Draggable } from "../components/Draggable/Draggable";
 import { ExitIcon } from "../components/Icons";
+import { NFTPanel } from "../components/NFTPanel/NFTPanel";
+import { NoiseBackground } from "../components/NoiseBackground/NoiseBackground";
 import { Stack } from "../components/Stack";
 import { TerminalLog } from "../components/Terminal/hooks/useTerminal";
 import { RandomPrompt } from "../components/Terminal/RandomPrompt";
 import { Terminal } from "../components/Terminal/Terminal";
 import { SpanText } from "../components/Text/Text";
+import { abbrevWalletAddress } from "../components/User/DisplayName";
 import { LocalMediaState, VideoPanel } from "../components/VideoPanel/VideoPanel";
 import { useChatSession } from "../hooks/use_chat_session";
 import { ConnectionStatus } from "../hooks/use_local_video_controls";
@@ -32,14 +37,8 @@ import { useStore } from "../store/store";
 import { deleteAuth } from "../utils/authRequest";
 import { arrayBufferToBase64 } from "../utils/base64";
 import { isBrave } from "../utils/brave";
-import { NoSSR } from "./_app";
-import ConnectedSound from "../assets/ir10.wav";
-import DisconnectedSound from "../assets/ir5.wav";
-import { abbrevWalletAddress } from "../components/User/DisplayName";
 import { logger } from "../utils/logger";
-import { NFTToken } from "../components/Tokens/NFTToken";
-import { Panel } from "../components/Panel";
-import { NoiseBackground } from "../components/NoiseBackground/NoiseBackground";
+import { NoSSR } from "./_app";
 
 const StyledExitIcon = styled(ExitIcon)`
   transform: translateY(3px);
@@ -709,20 +708,9 @@ const ChatPage: NextPage = () => {
                   />
                 </Stack>
                 {showAllNFT && (
-                  <Panel padding="xs" onClose={onClickShowNft} panelTitle={"Your NFT"}>
-                    <Box grow centerContent>
-                      <div style={{ display: "inline-flex", flexWrap: "wrap" }}>
-                        {selfNFT.map(nft => (
-                          <div
-                            key={`${nft.token_address}-${nft.token_id}`}
-                            style={{ width: "20px", height: "20px", overflow: "hidden" }}
-                          >
-                            <NFTToken token={nft} />
-                          </div>
-                        ))}
-                      </div>
-                    </Box>
-                  </Panel>
+                  <Stack row shrink grow={0} justifyContent="end">
+                    <NFTPanel nfts={selfNFT} onClose={onClickShowNft} />
+                  </Stack>
                 )}
               </Stack>
             </Box>
