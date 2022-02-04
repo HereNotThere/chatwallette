@@ -24,11 +24,11 @@ export interface Uniforms {
 }
 
 const uniforms = {
-  uIntensity: 0.06, //0.01,
-  uGlobalAlpha: 0.3,
-  uPatternMix: 0.2,
-  uNoiseIntensity: 0.23,
-  uOffsetSpeed: 0.5,
+  uIntensity: 0.1, //0.01,
+  uGlobalAlpha: 0.25,
+  uNoiseIntensity: 0.25,
+  uPatternMix: 0.5, //0.2,
+  uOffsetSpeed: 1.0,
   uViewport: [0, 0],
   uTime: 0,
 };

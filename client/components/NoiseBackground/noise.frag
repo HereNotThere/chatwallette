@@ -52,7 +52,7 @@ void main() {
   // random time/speed interval based on current area
   float t_span = (1.0 + rand(area_2) * 20.0);
   float t_floor = floor(uTime / t_span);
-  float t_base = (t_floor + mod(uTime, t_span) * step(0.99, rand(area_2 * t_floor)));
+  float t_base = t_floor + mod(uTime, t_span) * 10.0 * step(0.99, rand(area_1 * t_floor));
 
   // time variables
   float t0 = (uOffsetSpeed * 10.0) * t_base;
@@ -75,6 +75,8 @@ void main() {
   float noise = rand(vec2(uTime, 1.0) * co);
   float pattern_noise = uNoiseIntensity * 0.2 * mix(first_layer, noise, 0.01) *  rand(vec2(t1, 1.0) * co);
 
+  float pixel_glitch = step(0.9, rand(co));
+
   float opaque = mix(1.0, noise, 0.2) 
     * (
       step( 
@@ -84,5 +86,5 @@ void main() {
     );
   
 
-  gl_FragColor = vec4( uColor.rgb, pattern_noise + opaque * uGlobalAlpha * uColor.a);
+  gl_FragColor = vec4( uColor.rgb, pattern_noise + opaque * mix(uGlobalAlpha,1.0,pixel_glitch) * uColor.a);
 }
