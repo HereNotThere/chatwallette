@@ -536,8 +536,8 @@ const start = async () => {
         try {
           // HACK - using Snoop's wallet, he has a lot of NFT
           // const snoopWallet = "0xce90a7949bb78892f159f428d0dc23a8e3584d75";
-
-          const walletData = await fetchAllWalletAssets(request.log, moralisClient, walletAddress, chainId);
+          const altryne = "0x9c902541b3630a8e7986d75a30384cb0cbe321fc";
+          const walletData = await fetchAllWalletAssets(request.log, moralisClient, altryne, chainId);
           await signalingServer.updateWallet(request.log, walletAddress, walletData, chainId);
           const authRequestData = {
             chainId,

@@ -141,7 +141,7 @@ export const useChatSession = ({
       const chatId = sessionChatId;
 
       const peerConnectionId = peerConnectionCounter++;
-      const newConnection = new RTCPeerConnection({ iceCandidatePoolSize: 10, iceServers });
+      const newConnection = new RTCPeerConnection({ iceCandidatePoolSize: 1, iceServers });
 
       const createChatChannel = (newConnection: RTCPeerConnection) => {
         try {
