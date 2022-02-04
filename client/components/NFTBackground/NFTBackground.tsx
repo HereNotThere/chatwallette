@@ -154,8 +154,9 @@ const WIDTH = IntroModule.WIDTH - 40;
 const HEIGHT = IntroModule.HEIGHT - 40;
 
 const NFTLogo = React.memo((props: LogoProps) => {
-  const { dims, index, showing, hiddenListRef } = props;
+  const { dims, index, hiddenListRef } = props;
   const ref = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
   const [hidden, setHidden] = useState(true);
 
   useLayoutEffect(() => {
@@ -170,12 +171,13 @@ const NFTLogo = React.memo((props: LogoProps) => {
         const hiddenBottom = dx < WIDTH / 2 && Math.abs(dims[1] - 100 - (bounds.top + CELL_SIZE / 2)) < 50;
 
         setHidden(hiddenCentral || hiddenBottom);
+        setLoading(false);
       }
-    }, 0);
+    }, 500 + Math.random() * 500);
     return () => {
       clearTimeout(timeout);
     };
-  }, [dims]);
+  }, [dims, index]);
 
   useEffect(() => {
     const hiddenList = hiddenListRef?.current;
@@ -183,14 +185,18 @@ const NFTLogo = React.memo((props: LogoProps) => {
       hiddenList[index] = hidden;
     }
   }, [hidden, index, hiddenListRef]);
+
   const intensity = (Math.ceil(props.selected.indexOf(index) / 2) * 2) / props.selected.length;
+
   return (
     <StyledLogo
       {...props}
       ref={ref}
       intensity={intensity}
       status={
-        hidden || (!showing && true)
+        loading
+          ? LogoStatus.Loading
+          : hidden
           ? LogoStatus.Hidden
           : props.selected.indexOf(index) > -1
           ? LogoStatus.Selected
@@ -203,6 +209,7 @@ const NFTLogo = React.memo((props: LogoProps) => {
 NFTLogo.displayName = "BackgroundCoin";
 
 enum LogoStatus {
+  Loading = "Loading",
   Idle = "Idle",
   Selected = "Selected",
   Hidden = "Hidden",
@@ -214,26 +221,29 @@ type StyledLogoProps = {
   status: LogoStatus;
 };
 
-const StyledLogo = styled(Box).attrs<StyledLogoProps>(({ logoIndex }) => ({
-  as: "img",
-  src: Logos[logoIndex],
-}))<StyledLogoProps>`
+const StyledLogo = styled(Box).attrs<StyledLogoProps>(({ logoIndex, status, intensity }) => {
+  const opacity =
+    status === LogoStatus.Loading || status === LogoStatus.Hidden
+      ? 0
+      : status === LogoStatus.Idle
+      ? 0.2
+      : 0.2 + intensity;
+  // const visibility = status === LogoStatus.Hidden ? "hidden" : "visibile";
+  const transition = status === LogoStatus.Idle ? "opacity 250ms ease-in" : "opacity 750ms ease";
+
+  return {
+    as: "img",
+    src: Logos[logoIndex],
+    style: {
+      opacity,
+      // visibility,
+      transition,
+    },
+  };
+})<StyledLogoProps>`
   width: ${CELL_SIZE}px;
   height: ${CELL_SIZE}px;
-
   object-fit: contain;
   padding: 5px;
-
-  --faded: 0.2;
-
-  ${({ status, intensity }) =>
-    status === LogoStatus.Hidden
-      ? `
-          visibility: hidden;
-          opacity: var(--faded);
-        `
-      : `
-          opacity: ${status === LogoStatus.Idle ? `var(--faded)` : `calc(var(--faded) + ${intensity})`};
-        `}
-  transition: opacity 750ms ease-in-out;
+  opacity: 0.2;
 `;
