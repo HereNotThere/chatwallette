@@ -141,7 +141,14 @@ export const useChatSession = ({
       const chatId = sessionChatId;
 
       const peerConnectionId = peerConnectionCounter++;
-      const newConnection = new RTCPeerConnection({ iceCandidatePoolSize: 1, iceServers });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const privacyEnabled = urlParams.get("privacy") !== null;
+
+      const newConnection = new RTCPeerConnection({
+        iceServers,
+        iceTransportPolicy: privacyEnabled ? "relay" : undefined,
+      });
 
       const createChatChannel = (newConnection: RTCPeerConnection) => {
         try {
