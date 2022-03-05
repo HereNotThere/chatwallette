@@ -238,7 +238,7 @@ const Home: NextPage = () => {
           >
             <Button name={"Email"} icon={<EmailIcon />} background={"body"} textColor="NeonPurple" />
           </a>
-          <Link href={"https://herenottherelabs.notion.site/FAQ-2b0dce108daa4998a1a2a64f39604184"} passHref={true}>
+          <Link href={"https://docs.google.com/document/d/1y0nyxqbFr_trb_10NgWM4pnWv5KbdzOTgVKoMxTse3I/edit?usp=sharing"} passHref={true}>
             <a aria-label="Read FAQ about Chatwallette.xyz" target="_blank" rel="noreferrer noopener">
               <Button name={"FAQ"} icon={<QuestionIcon />} background={"body"} textColor="NeonPurple" />
             </a>
