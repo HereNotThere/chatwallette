@@ -21,7 +21,7 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.4",
     "fast-json-stable-stringify": "^2.1.0",
-    "fastify": "^3.27.1",
+    "fastify": "^3.29.4",
     "fastify-auto-push-v3": "^3.0.0",
     "fastify-cookie": "^5.5.0",
     "fastify-cors": "^6.0.2",
